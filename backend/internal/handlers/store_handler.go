@@ -18,12 +18,12 @@ func NewStoreHandler(s services.StoreService) *StoreHandler {
 }
 
 func (h *StoreHandler) Create(ctx echo.Context) error {
-	var input dtos.CreateStoreDTO
-	if err := ctx.Bind(&input); err != nil {
+	var dto dtos.CreateStoreDTO
+	if err := ctx.Bind(&dto); err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "invalid input"})
 	}
 
-	store, err := h.service.Create(input)
+	store, err := h.service.Create(dto)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
@@ -73,12 +73,12 @@ func (h *StoreHandler) Update(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "invalid UUID"})
 	}
 
-	var input dtos.UpdateStoreDTO
-	if err := ctx.Bind(&input); err != nil {
+	var dto dtos.UpdateStoreDTO
+	if err := ctx.Bind(&dto); err != nil {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "invalid input"})
 	}
 
-	updated, err := h.service.Update(id, input)
+	updated, err := h.service.Update(id, dto)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
