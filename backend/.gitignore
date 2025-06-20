@@ -1,0 +1,55 @@
+# Binaries
+/backend
+/backend.exe
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Output of 'go test'
+*.test
+
+# Vendor directory (se usar go mod vendor)
+/vendor/
+
+# IDE/editor files
+.vscode/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables files
+.env
+.env.local
+.env.*.local
+
+# Docker
+**/docker-compose.override.yml
+**/docker-compose.override.yaml
+
+# Build files
+/build/
+/dist/
+
+# Gorm auto migration files (se usar)
+/migrations/*.sql
+
+# Go module cache (opcional)
+/go/pkg/mod/
+
+# Coverage files
+coverage.out
+
+# Temporary files
+*.tmp
+*.swp
+
+# Misc
+*.out
