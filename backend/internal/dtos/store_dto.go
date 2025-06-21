@@ -15,5 +15,5 @@ type UpdateStoreDTO struct {
 	Name            *string           `json:"name"`
 	LegalName       *string           `json:"legal_name"`
 	Address         *UpdateAddressDTO `json:"address"`
-	EstablishmentID uuid.UUID         `json:"establishment_id" validate:"required"`
+	EstablishmentID *uuid.UUID        `json:"establishment_id"`
 }

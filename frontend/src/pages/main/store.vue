@@ -13,6 +13,7 @@
     </div>
 
 
+    <!-- // CRIAÇÃO -->
     <NuxtModal v-model:open="creating">
         <template #content>
             <Placeholder class="m-4 p-4">
@@ -72,6 +73,7 @@
 
 
     
+    <!-- update -->
     <NuxtModal v-model:open="isModalOpen">
         <template #content>
             <Placeholder class="m-4 p-4">
@@ -79,7 +81,7 @@
                     <div class="flex flex-col rounded-md gap-8 items-center">
                         <div class="w-full flex">
                             <NuxtFormField label="Estabelecimento">
-                                <NuxtSelect v-model="selectValue" :items="selectItems" class="w-48" />
+                                <NuxtSelect v-model="state.establishment_id" :items="selectItems" class="w-48" />
                             </NuxtFormField>
                         </div>
 
@@ -188,7 +190,7 @@
         legal_name: z.string().min(3, "Campo obrigatório"),
         number: z.string().min(1, "Campo obrigatório"),
 
-        establishment: z.string(),
+        establishment_id: z.string(),
         
         street: z.string(),
         address_number: z.string(),
@@ -228,6 +230,10 @@
             selectValue.value = newStore.establishment_id;
         }
     });
+
+    // watch(selectValue, (newVal) => {
+    //     state.establishment_id = newVal;
+    // });
 
     const openCreating = () => {
         Object.assign(state, {
@@ -295,8 +301,15 @@
 
         try {
             await create(payload);
-            const freshList = await list();
-            data.value = mapStoreData(freshList);
+
+            const [freshStores, freshEstabs] = await Promise.all([
+                list(),
+                listEstablishments(),
+            ]);
+
+            data.value = mapStoreData(freshStores);
+            selectItems.value = mapSelectItems(freshEstabs);
+
             toast.add({ title: 'Loja criada com sucesso!', color: 'success' });
             creating.value = false;
         } catch (err) {
@@ -313,7 +326,7 @@
                 name: values.name,
                 legal_name: values.legal_name,
                 number: values.number,
-                establishment_id: store.establishment_id,
+                establishment_id: values.establishment_id,
                 address: {
                     street: values.street,
                     number: values.address_number,
@@ -387,7 +400,6 @@
         },
         {
             accessorKey: 'establishment_id',
-            // header: () => h('fiv', { class: 'text-right' }, 'Estabelecimento'),
             header: ({ column }) => {
                 const isSorted = column.getIsSorted();
                 return h(NuxtButton, {
@@ -404,7 +416,8 @@
                 })
             },
             cell: ({ row }) => {
-                const { name } = establishments.value.find(est => est.id === row.getValue('establishment_id'));
+                const estab = establishments.value.find(est => est.id === row.getValue('establishment_id'));
+                const name = estab?.name ?? '—';
                 return h('div', { class: 'text-left font-medium' }, name);
             },
         },

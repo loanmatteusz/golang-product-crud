@@ -24,9 +24,9 @@ export const useStore = () => {
             throw new Error(error.value.message)
         }
 
-        const establishments = Array.from(data.value || []);
+        const stroes = Array.from(data.value || []);
 
-        return establishments.map((store): StorePreview => ({
+        return stroes.map((store): StorePreview => ({
             id: store.ID,
             name: store.Name,
             legal_name: store.LegalName,
@@ -38,7 +38,7 @@ export const useStore = () => {
                 state: store.Address?.State || '',
                 zip_code: store.Address?.ZipCode || '',
             },
-            establishment_id: store.Establishment.ID,
+            establishment_id: store.EstablishmentID,
         }));
     }
 

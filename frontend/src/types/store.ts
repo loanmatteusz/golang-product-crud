@@ -27,7 +27,7 @@ export type StorePreview = {
   name: string;
   legal_name: string;
   number: string;
-  establishment_id: string; // Establishment Name
+  establishment_id: string;
   address: {
     street: string;
     number: string;

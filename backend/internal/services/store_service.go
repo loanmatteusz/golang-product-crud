@@ -4,6 +4,7 @@ import (
 	"backend/internal/dtos"
 	"backend/internal/models"
 	"backend/internal/repositories"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -79,6 +80,9 @@ func (s *storeService) Update(id uuid.UUID, dto dtos.UpdateStoreDTO) (*models.St
 	if dto.LegalName != nil {
 		store.LegalName = *dto.LegalName
 	}
+	if dto.EstablishmentID != nil {
+		store.EstablishmentID = *dto.EstablishmentID
+	}
 
 	if dto.Address != nil {
 		address, err := s.addressRepository.FindByID(store.AddressID)
@@ -106,6 +110,8 @@ func (s *storeService) Update(id uuid.UUID, dto dtos.UpdateStoreDTO) (*models.St
 			return nil, err
 		}
 	}
+
+	fmt.Println(dto)
 
 	err = s.storeRepository.Update(store)
 	return store, err

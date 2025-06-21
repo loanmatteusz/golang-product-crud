@@ -21,5 +21,10 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.API_URL || 'http://localhost:3333',
     }
-  }
+  },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => ['lite-youtube'].includes(tag),
+    },
+  },
 });

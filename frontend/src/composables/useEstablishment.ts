@@ -52,7 +52,6 @@ export const useEstablishment = () => {
         }
     }
 
-
     const remove = async (id: string) => {
         const { error } = await useFetch(`${API_URL}/${id}`, {
             method: 'DELETE',
