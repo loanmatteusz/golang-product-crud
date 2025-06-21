@@ -1,9 +1,19 @@
 <template>
+  <div class="w-full items-center justify-center text-center">Loading...</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+    import { onMounted } from 'vue';
+    import { useRouter } from 'vue-router';
+
     definePageMeta({
-        middleware: 'auth',
         layout: 'default'
+    });
+
+    const router = useRouter();
+
+    onMounted(() => {
+        const isAuth = localStorage.getItem('auth') === 'true'
+        router.replace(isAuth ? '/establishment' : '/login')
     });
 </script>

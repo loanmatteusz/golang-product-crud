@@ -4,7 +4,7 @@ const API_URL = 'http://localhost:3333/establishments'
 
 export const useEstablishment = () => {
 
-    const create = async (data: EstablishmentPreview) => {
+    const create = async (data: Omit<EstablishmentPreview, 'id'>) => {
         const { error } = await useFetch(`${API_URL}`, {
             method: 'POST',
             body: data,
@@ -41,7 +41,7 @@ export const useEstablishment = () => {
         }));
     }
 
-    const update = async (id: string, updateData: Partial<EstablishmentResponse>) => {
+    const update = async (id: string, updateData: Partial<EstablishmentPreview>) => {
         const { error } = await useFetch(`${API_URL}/${id}`, {
             method: 'PUT',
             body: updateData,

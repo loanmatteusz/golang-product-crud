@@ -42,7 +42,7 @@ export const useStore = () => {
         }));
     }
 
-    const update = async (id: string, updateData: Partial<StoreResponse>) => {
+    const update = async (id: string, updateData: Partial<StorePreview>) => {
         const { error } = await useFetch(`${API_URL}/${id}`, {
             method: 'PUT',
             body: updateData,

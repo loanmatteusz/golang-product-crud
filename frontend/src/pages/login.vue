@@ -22,8 +22,11 @@
 
 
 <script setup lang="ts">
-    import * as z from 'zod'
-    import type { FormSubmitEvent } from '@nuxt/ui'
+    import * as z from 'zod/v4';
+    
+    definePageMeta({
+        layout: 'public'
+    });
     
     const router = useRouter();
     const auth = useAuth();
@@ -35,23 +38,24 @@
     });
 
     type Schema = z.output<typeof schema>;
+    type Login = {email: string, password: string}
 
     const state = reactive<Partial<Schema>>({
         email: undefined,
         password: undefined
     });
 
-    const login = async ({email, password}: {email: string, password: string}) => {
+    const login = async ({email, password}: Login) => {
         const success = await auth.login(email, password);
         if (success) {
-            router.push('/');
+            router.push('/establishment');
         } else {
             alert('Credenciais inválidas');
         }
     }
 
-    async function onSubmit(event: FormSubmitEvent<Schema>) {
-        await login(state);
+    async function onSubmit() {
+        await login(state as Login);
         toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' });
     }
 </script>

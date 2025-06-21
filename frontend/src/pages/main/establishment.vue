@@ -20,37 +20,37 @@
                     <div class="flex flex-col rounded-md gap-8 items-center">
                         <div class="w-full flex gap-4">
                             <NuxtFormField label="Nome" name="name" required>
-                                <NuxtInput v-model="state.name" />
+                                <NuxtInput v-model="state.name" placeholder="nome" />
                             </NuxtFormField>
                             
                             <NuxtFormField label="Razão Social" name="legal_name" required>
-                                <NuxtInput v-model="state.legal_name" />
+                                <NuxtInput v-model="state.legal_name" placeholder="razão social" />
                             </NuxtFormField>
     
                             <NuxtFormField label="Numero" name="number" required>
-                                <NuxtInput v-model="state.number" />
+                                <NuxtInput v-model="state.number" placeholder="numero" />
                             </NuxtFormField>
                         </div>
 
                         <div class="w-full grid grid-cols-3 gap-4 justify-between">
                             <NuxtFormField label="Rua" name="street">
-                                <NuxtInput v-model="state.street" />
+                                <NuxtInput v-model="state.street" placeholder="nome da rua" />
                             </NuxtFormField>
 
                             <NuxtFormField label="Numero da Rua" name="address_number">
-                                <NuxtInput v-model="state.address_number" />
+                                <NuxtInput v-model="state.address_number" placeholder="numero do endereço" />
                             </NuxtFormField>
 
                             <NuxtFormField label="Cidade" name="city" required>
-                                <NuxtInput v-model="state.city" />
+                                <NuxtInput v-model="state.city" placeholder="cidade" />
                             </NuxtFormField>
     
                             <NuxtFormField label="Estado" name="state" required>
-                                <NuxtInput v-model="state.state" />
+                                <NuxtInput v-model="state.state" placeholder="estado" />
                             </NuxtFormField>
     
                             <NuxtFormField label="CEP" name="zip_code">
-                                <NuxtInput v-model="state.zip_code" />
+                                <NuxtInput v-model="state.zip_code" placeholder="cep" />
                             </NuxtFormField>
                         </div>
 
@@ -117,11 +117,7 @@
 </template>
 
 <script setup lang="ts">
-    definePageMeta({
-        // layout: '/',
-    });
-
-    import * as z from 'zod';
+    import * as z from 'zod/v4';
     import { ref, h, resolveComponent } from 'vue';
     import type { TableColumn } from '@nuxt/ui'
     import type { Row } from '@tanstack/vue-table';
@@ -181,7 +177,7 @@
         zip_code:'',
     });
 
-    watch(establishmentToUpdate, (newEstablishment: EstablishmentPreview) => {
+    watch(establishmentToUpdate, (newEstablishment: any) => {
         if (newEstablishment) {
             state.id = newEstablishment.id;
             state.name = newEstablishment.name;
@@ -195,7 +191,7 @@
         }
     });
 
-    const openCreating = async (establishment: EstablishmentPreview) => {
+    const openCreating = async () => {
         Object.assign(state, {
             id: '',
             name: '',
@@ -262,15 +258,15 @@
             const freshList = await list()
             data.value = mapEstablishmentData(freshList)
 
-            toast.add({ title: 'Estabelecimento criado com sucesso!', color: 'success' })
-            creating.value = false
+            toast.add({ title: 'Estabelecimento criado com sucesso!', color: 'success' });
+            creating.value = false;
         } catch (err) {
-            toast.add({ title: 'Erro ao criar estabelecimento', color: 'red' })
-            console.error(err)
+            toast.add({ title: 'Erro ao criar estabelecimento', color: 'error' });
+            console.error(err);
         }
     }
 
-    const updateEstablishment = async (establishment: Partial<Schema>) => {
+    const updateEstablishment = async (establishment: any) => {
         const values = establishment.data;
         try {
             const updatePayload = {
@@ -284,7 +280,7 @@
                     state: values.state,
                     zip_code: values.zip_code,
                 }
-            };
+            } as EstablishmentPreview;
 
             if (!values.id) {
                 throw new Error('ID do estabelecimento não informado');
@@ -298,7 +294,7 @@
             toast.add({ title: 'Estabelecimento atualizado com sucesso!', color: 'success' });
             isModalOpen.value = false;
         } catch (err) {
-            toast.add({ title: 'Erro ao atualizar estabelecimento', color: 'red' });
+            toast.add({ title: 'Erro ao atualizar estabelecimento', color: 'error' });
             console.error(err);
         }
     }
@@ -311,7 +307,7 @@
             data.value = mapEstablishmentData(freshList);
             toast.add({ title: 'Establishment deleted.', color: 'success' });
         } catch (err) {
-            toast.add({ title: 'Erro ao deletar', color: 'red' });
+            toast.add({ title: 'Erro ao deletar', color: 'error' });
             console.error(err);
         }
     };
@@ -328,7 +324,7 @@
         zip_code: string
     }
 
-    const establishmentsPreview = mapEstablishmentData(establishments.value);
+    const establishmentsPreview = mapEstablishmentData(establishments.value as EstablishmentPreview[]);
 
     // CONFIGURAÇÃO DAS COLUMNS
     const columns: TableColumn<DataPreview>[] = [
@@ -421,7 +417,7 @@
             {
                 label: 'View establishment details',
                 onSelect() {
-                    openModal(row.original);
+                    openModal(row.original as any);
                 }
             },
             {

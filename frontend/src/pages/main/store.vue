@@ -21,43 +21,43 @@
                     <div class="flex flex-col rounded-md gap-8 items-center">
                         <div class="w-full flex">
                             <NuxtFormField label="Estabelecimento">
-                                <NuxtSelect v-model="selectValue" :items="selectItems" class="w-48" />
+                                <NuxtSelect v-model="state.establishment_id" :items="selectItems" class="w-48" placeholder="Choose an point" />
                             </NuxtFormField>
                         </div>
 
                         <div class="w-full flex gap-4">
                             <NuxtFormField label="Nome" name="name" required>
-                                <NuxtInput v-model="state.name" />
+                                <NuxtInput v-model="state.name" placeholder="nome" />
                             </NuxtFormField>
                             
                             <NuxtFormField label="Razão Social" name="legal_name" required>
-                                <NuxtInput v-model="state.legal_name" />
+                                <NuxtInput v-model="state.legal_name" placeholder="razao social" />
                             </NuxtFormField>
 
                             <NuxtFormField label="Numero" name="number" required>
-                                <NuxtInput v-model="state.number" />
+                                <NuxtInput v-model="state.number" placeholder="numero" />
                             </NuxtFormField>
                         </div>
 
                         <div class="w-full grid grid-cols-3 gap-4 justify-between">
                             <NuxtFormField label="Rua" name="street">
-                                <NuxtInput v-model="state.street" />
+                                <NuxtInput v-model="state.street" placeholder="nome da rua" />
                             </NuxtFormField>
 
                             <NuxtFormField label="Numero da Rua" name="address_number">
-                                <NuxtInput v-model="state.address_number" />
+                                <NuxtInput v-model="state.address_number" placeholder="numero do endereço" />
                             </NuxtFormField>
 
                             <NuxtFormField label="Cidade" name="city" required>
-                                <NuxtInput v-model="state.city" />
+                                <NuxtInput v-model="state.city" placeholder="cidade" />
                             </NuxtFormField>
 
                             <NuxtFormField label="Estado" name="state" required>
-                                <NuxtInput v-model="state.state" />
+                                <NuxtInput v-model="state.state" placeholder="estado" />
                             </NuxtFormField>
 
                             <NuxtFormField label="CEP" name="zip_code">
-                                <NuxtInput v-model="state.zip_code" />
+                                <NuxtInput v-model="state.zip_code" placeholder="cep" />
                             </NuxtFormField>
                         </div>
 
@@ -133,11 +133,7 @@
 </template>
 
 <script setup lang="ts">
-    definePageMeta({
-        // layout: '/',
-    });
-
-    import * as z from 'zod';
+    import * as z from 'zod/v4';
     import { ref, h, resolveComponent } from 'vue';
     import type { TableColumn } from '@nuxt/ui'
     import type { Row } from '@tanstack/vue-table';
@@ -145,6 +141,7 @@
 
     import { useStore } from '~/composables/useStore';
     import type { StorePreview } from "~/types/store";
+    import type { EstablishmentPreview } from '~/types/establishment';
     
     const NuxtButton = resolveComponent('NuxtButton');
     const NuxtDropdownMenu = resolveComponent('NuxtDropdownMenu');
@@ -167,22 +164,22 @@
     );
     
     if (storeError.value || establishmentError.value) {
-        console.error('Erro ao carregar dados:', error.value);
+        console.error('Erro ao carregar dados:', storeError.value);
     }
     
     const page = ref(1);
     const creating = ref(false);
     
     const isModalOpen = ref<boolean>(false);
-    const storeToUpdate = ref<StorePreview | null>(null);
+    const storeToUpdate = ref<Partial<StorePreview> | null>(null);
     
-    const mapSelectItems = (estabs: EstablishmentPreview) => (estabs.map(estab => ({
+    const mapSelectItems = (estabs: EstablishmentPreview[]) => (estabs.map(estab => ({
         label: estab.name,
         value: estab.id,
     })));
 
-    const selectItems = ref(mapSelectItems(establishments.value));
-    const selectValue = ref(storeToUpdate.establishment_id || null);
+    const selectItems = ref(mapSelectItems(establishments.value as EstablishmentPreview[]));
+    const selectValue = ref<string>(storeToUpdate.value?.establishment_id ?? "");
 
     const schema = z.object({
         id: z.string(),
@@ -214,7 +211,7 @@
         zip_code:'',
     });
 
-    watch(storeToUpdate, (newStore: StorePreview) => {
+    watch(storeToUpdate, (newStore: any) => {
         if (newStore) {
             state.id = newStore.id;
             state.name = newStore.name;
@@ -222,7 +219,7 @@
             state.number = newStore.number;
             state.establishment_id = newStore.establishment_id;
             state.street = newStore.street;
-            state.address_number = newStore.address_number;
+            state.address_number = newStore.number;
             state.city = newStore.city;
             state.state = newStore.state;
             state.zip_code = newStore.zip_code;
@@ -230,10 +227,6 @@
             selectValue.value = newStore.establishment_id;
         }
     });
-
-    // watch(selectValue, (newVal) => {
-    //     state.establishment_id = newVal;
-    // });
 
     const openCreating = () => {
         Object.assign(state, {
@@ -249,7 +242,7 @@
             zip_code: '',
         });
 
-        selectValue.value = null;
+        selectValue.value = '';
         creating.value = true;
     };
 
@@ -284,7 +277,6 @@
 
     const createStore = async (form: { data: Schema }) => {
         const values = form.data;
-
         const payload = {
             name: values.name,
             legal_name: values.legal_name,
@@ -313,7 +305,7 @@
             toast.add({ title: 'Loja criada com sucesso!', color: 'success' });
             creating.value = false;
         } catch (err) {
-            toast.add({ title: 'Erro ao criar loja', color: 'red' });
+            toast.add({ title: 'Erro ao criar loja', color: 'error' });
             console.error(err);
         }
     };
@@ -340,7 +332,7 @@
                 throw new Error('ID do estabelecimento não informado');
             }
 
-            await update(values.id, updatePayload);
+            await update(values.id, updatePayload as StorePreview);
 
             const freshList = await list();
             data.value = mapStoreData(freshList);
@@ -348,7 +340,7 @@
             toast.add({ title: 'Estabelecimento atualizado com sucesso!', color: 'success' });
             isModalOpen.value = false;
         } catch (err) {
-            toast.add({ title: 'Erro ao atualizar estabelecimento', color: 'red' });
+            toast.add({ title: 'Erro ao atualizar estabelecimento', color: 'error' });
             console.error(err);
         }
     }
@@ -361,7 +353,7 @@
             data.value = mapStoreData(freshList);
             toast.add({ title: 'Store deleted.', color: 'success' });
         } catch (err) {
-            toast.add({ title: 'Erro ao deletar', color: 'red' });
+            toast.add({ title: 'Erro ao deletar', color: 'error' });
             console.error(err);
         }
     };
@@ -379,7 +371,7 @@
         zip_code: string;
     }
 
-    const storesPreview = mapStoreData(stores.value);
+    const storesPreview = mapStoreData(stores.value as StorePreview[]);
 
     // CONFIGURAÇÃO DAS COLUMNS
     const columns: TableColumn<DataPreview>[] = [
@@ -416,7 +408,7 @@
                 })
             },
             cell: ({ row }) => {
-                const estab = establishments.value.find(est => est.id === row.getValue('establishment_id'));
+                const estab = establishments.value?.find(est => est.id === row.getValue('establishment_id'));
                 const name = estab?.name ?? '—';
                 return h('div', { class: 'text-left font-medium' }, name);
             },
@@ -495,7 +487,7 @@
             {
                 label: 'View store details',
                 onSelect() {
-                    openModal(row.original);
+                    openModal(row.original as any);
                 }
             },
             {
