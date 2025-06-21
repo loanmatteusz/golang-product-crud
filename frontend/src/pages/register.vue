@@ -47,7 +47,6 @@
     });
 
     const register = async ({name, email, password}: {name: string, email: string, password: string}) => {
-        console.log({ email, password });
         const success = await auth.register(name, email, password);
         if (success) {
             router.push('/login');
@@ -58,7 +57,6 @@
 
     async function onSubmit(event: FormSubmitEvent<Schema>) {
         await register(state);
-        toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
-        console.log(event.data)
+        toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' });
     }
 </script>

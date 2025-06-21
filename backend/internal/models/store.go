@@ -15,7 +15,8 @@ type Store struct {
 	AddressID uuid.UUID `gorm:"type:uuid;not null;column:address_id"`
 	Address   Address   `gorm:"foreignKey:AddressID"`
 
-	EstablishmentID uuid.UUID `gorm:"type:uuid;not null;column:establishment_id"`
+	EstablishmentID uuid.UUID     `gorm:"type:uuid;not null;column:establishment_id"`
+	Establishment   Establishment `gorm:"foreignKey:EstablishmentID"`
 
 	CreatedAt time.Time `gorm:"column:created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at"`

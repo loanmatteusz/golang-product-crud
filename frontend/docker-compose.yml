@@ -1,0 +1,12 @@
+services:
+  nuxt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nuxt-app
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      API_URL: http://host.docker.internal:3333
+    command: node .output/server/index.mjs

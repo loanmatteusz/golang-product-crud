@@ -1,75 +1,73 @@
-# Nuxt Minimal Starter
+# Admin Dashboard - Estabelecimentos e Lojas
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Painel de administração feito em **Nuxt 3** utilizando **Nuxt UI**, com gerenciamento de **estabelecimentos** e **lojas** conectados a uma **API REST** local.
 
-## Setup
+## ✨ Funcionalidades
 
-Make sure to install dependencies:
+- 📋 Listagem de Estabelecimentos e Lojas
+- ➕ Criação de Lojas com associação a Estabelecimentos
+- ✏️ Edição de dados de Lojas
+- 🗑️ Remoção de Lojas
+- 🔍 Paginação e ordenação nas tabelas
+- 📦 Integração com API backend
+
+## 🧰 Tecnologias
+
+- [Nuxt 3](https://nuxt.com/)
+- [Nuxt UI](https://ui.nuxt.com/)
+- [VueUse](https://vueuse.org/)
+- [Zod](https://zod.dev/) para validação de formulários
+- [@tanstack/vue-table](https://tanstack.com/table/v8/docs/guide/vue/overview) para gerenciamento de tabelas
+
+
+
+## 🚀 Start do projeto
+
+1. Instale as dependências:
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+2. Rode o projeto:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+3. Acesse via navegador:
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+```
+http://localhost:3000
 ```
 
-Locally preview production build:
+## 🔧 Variáveis de Ambiente
 
-```bash
-# npm
-npm run preview
+Você pode configurar o endpoint da API em `composables/useStore.ts` e `useEstablishment.ts`:
 
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+```ts
+const API_URL = 'http://localhost:3333/stores'
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Para um projeto mais flexível, mova isso para `.env`:
+
+```ts
+const API_URL = useRuntimeConfig().public.apiBase + '/stores';
+```
+
+E no `nuxt.config.ts`:
+
+```ts
+runtimeConfig: {
+  public: {
+    apiBase: process.env.API_BASE || 'http://localhost:3333'
+  }
+}
+```
+
+## 🧪 TODO / Melhorias Futuras
+
+- [ ] Autenticação com token JWT
+- [ ] Filtro e busca por nome/estabelecimento
+- [ ] Paginação real via backend
+---

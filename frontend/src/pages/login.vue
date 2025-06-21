@@ -42,10 +42,9 @@
     });
 
     const login = async ({email, password}: {email: string, password: string}) => {
-        console.log({ email, password });
         const success = await auth.login(email, password);
         if (success) {
-            router.push('/dashboard');
+            router.push('/');
         } else {
             alert('Credenciais inválidas');
         }
@@ -53,7 +52,6 @@
 
     async function onSubmit(event: FormSubmitEvent<Schema>) {
         await login(state);
-        toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
-        console.log(event.data)
+        toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' });
     }
 </script>

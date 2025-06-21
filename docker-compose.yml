@@ -1,0 +1,46 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      API_URL: http://host.docker.internal:3333
+    depends_on:
+      - backend
+    command: node .output/server/index.mjs
+
+  backend:
+    container_name: backend
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    ports:
+      - "3333:3333"
+    environment:
+      - DB_HOST=db
+      - DB_USER=docker
+      - DB_PASSWORD=123
+      - DB_NAME=snet_db
+      - DB_PORT=5432
+      - APP_PORT=3333
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: snet_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

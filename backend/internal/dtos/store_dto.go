@@ -11,8 +11,9 @@ type CreateStoreDTO struct {
 }
 
 type UpdateStoreDTO struct {
-	Number    *string           `json:"number"`
-	Name      *string           `json:"name"`
-	LegalName *string           `json:"legal_name"`
-	Address   *UpdateAddressDTO `json:"address"`
+	Number          *string           `json:"number"`
+	Name            *string           `json:"name"`
+	LegalName       *string           `json:"legal_name"`
+	Address         *UpdateAddressDTO `json:"address"`
+	EstablishmentID uuid.UUID         `json:"establishment_id" validate:"required"`
 }
