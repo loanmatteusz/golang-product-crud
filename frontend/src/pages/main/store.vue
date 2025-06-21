@@ -1,12 +1,12 @@
 <template>
-    <div class="w-full flex flex-col text-center">
-        <div class="w-full flex gap-2 items-center justify-center">
+    <div class="w-full flex flex-col h-screen">
+        <div class="w-full flex gap-4 items-center justify-center">
             <h1 class="font-bold">LOJAS</h1>
             <NuxtButton variant="outline" @click="openCreating">New</NuxtButton>
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-6 max-h-10/11">
             <NuxtTable :data="data" :columns="columns" class="flex-1" />
-            <div class="w-full flex px-6 justify-end">
+            <div class="w-full flex px-2 justify-end">
                 <NuxtPagination v-model:page="page" :total="100" class="end" /> 
             </div>
         </div>
