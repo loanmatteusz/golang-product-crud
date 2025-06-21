@@ -55,7 +55,7 @@
         if (success) {
             router.push('/login');
         } else {
-            alert('Credenciais inválidas, try another email');
+            alert('Email inválido');
         }
     }
 
