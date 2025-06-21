@@ -16,6 +16,7 @@ RUN go build -o backend ./cmd/api
 FROM alpine:latest
 
 RUN apk --no-cache add ca-certificates
+RUN apk add --no-cache netcat-openbsd
 
 WORKDIR /root/
 

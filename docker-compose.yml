@@ -29,6 +29,7 @@ services:
       - APP_PORT=3333
     depends_on:
       - db
+    command: sh -c "until nc -z db 5432; do echo 'waiting db...'; sleep 1; done && ./backend"
 
   db:
     image: postgres:15-alpine
