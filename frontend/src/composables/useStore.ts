@@ -1,8 +1,9 @@
 import type { StorePreview, StoreResponse } from "~/types/store";
 
-const API_URL = 'http://localhost:3333/stores'
 
 export const useStore = () => {
+
+    const API_URL = process.env.API_URL || 'http://localhost:3333/stores';
 
     const create = async (data: Partial<StorePreview>) => {
         const { error } = await useFetch(`${API_URL}`, {
