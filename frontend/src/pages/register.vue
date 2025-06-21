@@ -3,15 +3,15 @@
         <NuxtForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
             <div class="flex flex-col p-8 rounded-md gap-4 items-center">
                 <NuxtFormField label="Name" name="name">
-                  <NuxtInput v-model="state.name" />
+                  <NuxtInput v-model="state.name" placeholder="user" />
                 </NuxtFormField>
 
                 <NuxtFormField label="Email" name="email">
-                  <NuxtInput v-model="state.email" />
+                  <NuxtInput v-model="state.email" placeholder="example@email.com" />
                 </NuxtFormField>
             
                 <NuxtFormField label="Password" name="password">
-                  <NuxtInput v-model="state.password" type="password" />
+                  <NuxtInput v-model="state.password" type="password" placeholder="******" />
                 </NuxtFormField>
             
                 <div class="w-full flex items-center justify-between">
