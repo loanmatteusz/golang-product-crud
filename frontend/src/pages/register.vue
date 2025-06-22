@@ -61,6 +61,6 @@
 
     async function onSubmit() {
         await register(state as Register);
-        toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' });
+        toast.success({ title: 'Success', message: 'The form has been submitted.', timeout: 500 });
     }
 </script>

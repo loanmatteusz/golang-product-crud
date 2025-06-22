@@ -258,10 +258,10 @@
             const freshList = await list()
             data.value = mapEstablishmentData(freshList)
 
-            toast.add({ title: 'Estabelecimento criado com sucesso!', color: 'success' });
+            toast.success({ title: 'Estabelecimento criado com sucesso!', timeout: 1500 });
             creating.value = false;
         } catch (err) {
-            toast.add({ title: 'Erro ao criar estabelecimento', color: 'error' });
+            toast.success({ title: 'Erro ao criar estabelecimento', timeout: 1500 });
             console.error(err);
         }
     }
@@ -291,10 +291,10 @@
             const freshList = await list();
             data.value = mapEstablishmentData(freshList);
 
-            toast.add({ title: 'Estabelecimento atualizado com sucesso!', color: 'success' });
+            toast.success({ title: 'Estabelecimento atualizado com sucesso!', timeout: 1500 });
             isModalOpen.value = false;
         } catch (err) {
-            toast.add({ title: 'Erro ao atualizar estabelecimento', color: 'error' });
+            toast.success({ title: 'Erro ao atualizar estabelecimento', timeout: 1500 });
             console.error(err);
         }
     }
@@ -305,9 +305,9 @@
             await remove(id);
             const freshList = await list();
             data.value = mapEstablishmentData(freshList);
-            toast.add({ title: 'Establishment deleted.', color: 'success' });
+            toast.success({ title: 'Establishment deleted.', timeout: 1500 });
         } catch (err) {
-            toast.add({ title: 'Erro ao deletar', color: 'error' });
+            toast.success({ title: 'Erro ao deletar', timeout: 1500 });
             console.error(err);
         }
     };
@@ -404,9 +404,8 @@
                 label: 'Copy establishment ID',
                 onSelect() {
                     copy(row.original.id);
-                    toast.add({
+                    toast.success({
                         title: 'Establishment ID copied to clipboard!',
-                        color: 'success',
                         icon: 'i-lucide-circle-check',
                     });
                 }

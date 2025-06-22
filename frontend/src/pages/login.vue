@@ -56,6 +56,6 @@
 
     async function onSubmit() {
         await login(state as Login);
-        toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' });
+        toast.success({ title: 'Success', message: 'The form has been submitted.' });
     }
 </script>
