@@ -2,13 +2,13 @@ import type { StorePreview, StoreResponse } from "~/types/store";
 
 
 export const useStore = () => {
-
-    const API_URL = process.env.API_URL || 'http://localhost:3333/stores';
+    const config = useRuntimeConfig();
 
     const create = async (data: Partial<StorePreview>) => {
-        const { error } = await useFetch(`${API_URL}`, {
+        const { error } = await useFetch("/stores", {
             method: 'POST',
             body: data,
+            baseURL: config.public.apiUrl,
         });
 
         if (error.value) {
@@ -17,8 +17,9 @@ export const useStore = () => {
     };
 
     const list = async () => {
-        const { data, error } = await useFetch<StoreResponse[]>(`${API_URL}`, {
+        const { data, error } = await useFetch<StoreResponse[]>("/stores", {
             method: 'GET',
+            baseURL: config.public.apiUrl,
         });
 
         if (error.value) {
@@ -44,9 +45,10 @@ export const useStore = () => {
     }
 
     const update = async (id: string, updateData: Partial<StorePreview>) => {
-        const { error } = await useFetch(`${API_URL}/${id}`, {
+        const { error } = await useFetch(`/stores/${id}`, {
             method: 'PUT',
             body: updateData,
+            baseURL: config.public.apiUrl,
         });
 
         if (error.value) {
@@ -55,8 +57,9 @@ export const useStore = () => {
     }
 
     const remove = async (id: string) => {
-        const { error } = await useFetch(`${API_URL}/${id}`, {
+        const { error } = await useFetch(`/establishments/${id}`, {
             method: 'DELETE',
+            baseURL: config.public.apiUrl,
         });
 
         if (error.value) {

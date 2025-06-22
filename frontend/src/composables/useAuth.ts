@@ -1,5 +1,6 @@
 export const useAuth = () => {
     const auth = useState<boolean | null>('auth', () => null);
+    const config = useRuntimeConfig();
 
     const register = async (name: string, email: string, password: string) => {
         const { data, error } = await useFetch('/auth/register', {
@@ -9,7 +10,7 @@ export const useAuth = () => {
                 email,
                 password,
             },
-            baseURL: process.env.API_URL || 'http://localhost:3333',
+            baseURL:  config.public.apiUrl,
         });
 
         if (error.value || !data.value) {
@@ -23,7 +24,7 @@ export const useAuth = () => {
         const { data, error } = await useFetch<boolean>('/auth/login', {
             method: 'POST',
             body: { email, password },
-            baseURL: process.env.API_URL || 'http://localhost:3333',
+            baseURL: config.public.apiUrl,
         });
 
         if (error.value || !data.value) {

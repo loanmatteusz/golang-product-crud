@@ -1,13 +1,13 @@
 import type { EstablishmentPreview, EstablishmentResponse } from "~/types/establishment";
 
 export const useEstablishment = () => {
-
-    const API_URL = process.env.API_URL || 'http://localhost:3333/establishments';
+    const config = useRuntimeConfig();
 
     const create = async (data: Omit<EstablishmentPreview, 'id'>) => {
-        const { error } = await useFetch(`${API_URL}`, {
+        const { error } = await useFetch("/establishments", {
             method: 'POST',
             body: data,
+            baseURL: config.public.apiUrl,
         });
 
         if (error.value) {
@@ -16,8 +16,9 @@ export const useEstablishment = () => {
     }
 
     const list = async () => {
-        const { data, error } = await useFetch<EstablishmentResponse[]>(`${API_URL}`, {
+        const { data, error } = await useFetch<EstablishmentResponse[]>("/establishments", {
             method: 'GET',
+            baseURL: config.public.apiUrl,
         });
 
         if (error.value) {
@@ -42,9 +43,10 @@ export const useEstablishment = () => {
     }
 
     const update = async (id: string, updateData: Partial<EstablishmentPreview>) => {
-        const { error } = await useFetch(`${API_URL}/${id}`, {
+        const { error } = await useFetch(`/establishments/${id}`, {
             method: 'PUT',
             body: updateData,
+            baseURL: config.public.apiUrl,
         });
 
         if (error.value) {
@@ -53,8 +55,9 @@ export const useEstablishment = () => {
     }
 
     const remove = async (id: string) => {
-        const { error } = await useFetch(`${API_URL}/${id}`, {
+        const { error } = await useFetch(`/establishments/${id}`, {
             method: 'DELETE',
+            baseURL: config.public.apiUrl,
         });
 
         if (error.value) {
