@@ -133,6 +133,7 @@
 </template>
 
 <script setup lang="ts">
+    setPageLayout('private');
     import * as z from 'zod/v4';
     import { ref, h, resolveComponent } from 'vue';
     import type { TableColumn } from '@nuxt/ui'

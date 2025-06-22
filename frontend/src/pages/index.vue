@@ -6,10 +6,6 @@
     import { onMounted } from 'vue';
     import { useRouter } from 'vue-router';
 
-    definePageMeta({
-        layout: 'default'
-    });
-
     const router = useRouter();
 
     onMounted(() => {

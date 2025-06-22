@@ -26,11 +26,7 @@
 
 <script setup lang="ts">
     import * as z from 'zod/v4';
-    
-    definePageMeta({
-        layout: 'public'
-    });
-    
+
     const router = useRouter();
     const auth = useAuth();
     const toast = useToast();
