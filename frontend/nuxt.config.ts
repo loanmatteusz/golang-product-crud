@@ -5,9 +5,17 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
   srcDir: 'src/',
-  modules: ["@nuxt/ui", 'nuxt-toast'],
+  modules: ["@nuxt/ui", 'nuxt-toast', 'shadcn-nuxt'],
   ui: {
     prefix: 'Nuxt'
+  },
+  shadcn: {
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: './components/ui'
   },
   css: ['./assets/css/main.css'],
   vite: {
