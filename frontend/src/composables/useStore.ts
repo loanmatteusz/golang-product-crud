@@ -57,7 +57,7 @@ export const useStore = () => {
     }
 
     const remove = async (id: string) => {
-        const { error } = await useFetch(`/establishments/${id}`, {
+        const { error } = await useFetch(`/stores/${id}`, {
             method: 'DELETE',
             baseURL: config.public.apiUrl,
         });
