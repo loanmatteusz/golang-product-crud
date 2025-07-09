@@ -5,9 +5,22 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
   srcDir: 'src/',
-  modules: ["@nuxt/ui", 'nuxt-toast', 'shadcn-nuxt', '@nuxt/icon'],
+  modules: [
+    "@nuxt/ui",
+    'nuxt-toast',
+    'shadcn-nuxt',
+    '@nuxt/icon',
+  ],
   ui: {
     prefix: 'Nuxt'
+  },
+  icon: {
+    customCollections: [
+      {
+        prefix: 'svg',
+        dir: './assets/svg',
+      },
+    ],
   },
   shadcn: {
     prefix: '',

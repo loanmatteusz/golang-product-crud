@@ -39,9 +39,9 @@
 <!-- TEMPLATE -->
 
 <template>
-    <div class="flex flex-col p-4 h-[100vh] items-center justify-between">        
+    <div class="flex flex-col pb-4 h-[100vh] items-center justify-between">        
         <div class="flex mt-8">
-            <img :src="'/logo-white.svg'" />
+            <Icon name="svg:logo-white" class="w-16 h-16" />
         </div>
         
         <NuxtForm :schema="schema" :state="state" @submit="onSubmit"
