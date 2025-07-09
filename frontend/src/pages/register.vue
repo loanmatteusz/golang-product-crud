@@ -1,6 +1,10 @@
 <script setup lang="ts">
     import * as z from 'zod/v4';
 
+    useHead({
+        title: 'Register Page',
+    });
+
     const router = useRouter();
     const auth = useAuth();
     const toast = useToast();
