@@ -8,6 +8,10 @@
     import { onMounted } from 'vue';
     import { useRouter } from 'vue-router';
 
+    useHead({
+        title: 'Loading',
+    });
+
     const router = useRouter();
 
     onMounted(() => {
