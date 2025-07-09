@@ -1,26 +1,3 @@
-<template>
-    <div class="flex flex-col p-4 items-center">
-        <NuxtForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-            <div class="flex flex-col p-8 rounded-md gap-4 items-center">
-                <NuxtFormField label="Email" name="email">
-                  <NuxtInput v-model="state.email" placeholder="example@email.com" />
-                </NuxtFormField>
-            
-                <NuxtFormField label="Password" name="password">
-                  <NuxtInput v-model="state.password" type="password" placeholder="******" />
-                </NuxtFormField>
-            
-                <NuxtButton type="submit">Submit</NuxtButton>
-
-                <NuxtLink to="/register" class="text-sm text-blue-500 hover:underline mt-2">
-                    Criar uma conta
-                </NuxtLink>
-            </div>
-        </NuxtForm>
-    </div>
-</template>
-
-
 <script setup lang="ts">
     import * as z from 'zod/v4';
 
@@ -55,3 +32,70 @@
         toast.success({ title: 'Success', message: 'The form has been submitted.' });
     }
 </script>
+
+
+<!-- TEMPLATE -->
+
+<template>
+    <div class="flex flex-col p-4 h-[100vh] items-center justify-between">        
+        <div class="flex mt-8">
+            <img :src="'/logo-white.svg'" />
+        </div>
+        
+        <NuxtForm :schema="schema" :state="state" @submit="onSubmit"
+            class="flex flex-col w-full mb-8 px-8 py-12 gap-6 rounded-2xl sm:w-md sm:px-14 sm:py-10 sm:bg-[#ffffff29]"
+        >
+            <p class="text-3xl text-center text-white">Acesse sua conta</p>
+
+            <div class="flex flex-col gap-8">
+                <div class="flex flex-col gap-2">
+                    <label class="block text-sm font-bold text-gray-900 dark:text-white">Email</label>
+                    <input
+                        required
+                        v-model="state.email"
+                        name="email"
+                        type="email"
+                        placeholder="example@company.com"
+                        class="sm:w-full sm:bg-background text-white p-3 rounded-xl bg-cyan-800 border-cyan-950 border-2 focus:outline-0 focus:border-white"
+                    />
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label class="block text-sm font-bold text-gray-900 dark:text-white">Password</label>
+                    <input
+                        required
+                        v-model="state.password"
+                        name="password"
+                        type="password"
+                        placeholder="Sua senha"
+                        class="sm:w-full sm:bg-background text-white p-3 rounded-xl bg-cyan-800 border-cyan-950 border-2 focus:outline-0 focus:border-white"
+                    />
+                </div>
+            </div>
+
+            <button type="submit" class="w-full p-3 mt-4 rounded-lg cursor-pointer text-sm font-bold bg-[#e0e0e0] border-[#e0e0e0] text-[#767676] hover:bg-[#f1f1f1]">
+                Acessar conta
+            </button>
+
+            <NuxtLink href="register" class="text-white text-center underline">
+                Criar uma nova conta
+            </NuxtLink>
+
+            <hr class="my-2 h-0.5 border-t-0 bg-neutral-100 dark:bg-white" />
+
+            <div class="flex items-center justify-center">
+                <button class="flex w-64 gap-2 p-2 justify-evenly cursor-pointer text-sm font-bold bg-[#e0e0e0] border-[#e0e0e0] text-[#767676] hover:bg-[#f1f1f1]">
+                    <Icon name="logos:google-icon" class="w-5 h-5" />
+                    Acessar conta com Google
+                </button>
+            </div>
+        </NuxtForm>
+
+        <div>
+            <p class="flex text-sm">
+                Este site é protegido por reCAPTCHA e o Google.
+                São aplicados os&nbsp;<a href="#" class="underline">Termos de serviço</a>&nbsp;e a&nbsp;<a href="#" class="underline">Política de privacidade</a>.
+            </p>
+        </div>
+    </div>
+</template>

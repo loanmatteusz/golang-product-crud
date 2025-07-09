@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
   srcDir: 'src/',
-  modules: ["@nuxt/ui", 'nuxt-toast', 'shadcn-nuxt'],
+  modules: ["@nuxt/ui", 'nuxt-toast', 'shadcn-nuxt', '@nuxt/icon'],
   ui: {
     prefix: 'Nuxt'
   },
