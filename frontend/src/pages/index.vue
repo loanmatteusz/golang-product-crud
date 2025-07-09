@@ -1,5 +1,7 @@
 <template>
-  <div class="w-full items-center justify-center text-center">Loading...</div>
+  <div class="flex flex-col w-full h-[100vh] font-bold items-center justify-center text-center text-white">
+    Loading...
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -9,7 +11,7 @@
     const router = useRouter();
 
     onMounted(() => {
-        const isAuth = localStorage.getItem('auth') === 'true'
-        router.replace(isAuth ? '/establishment' : '/login')
+        const isAuth = localStorage.getItem('auth') === 'true';
+        router.replace(isAuth ? '/establishment' : '/login');
     });
 </script>
