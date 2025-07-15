@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col w-full h-[100vh] font-bold items-center justify-center text-center text-white">
+  <div class="flex flex-col w-full font-bold items-center justify-center text-center text-white">
     Loading...
   </div>
 </template>
@@ -16,6 +16,6 @@
 
     onMounted(() => {
         const isAuth = localStorage.getItem('auth') === 'true';
-        router.replace(isAuth ? '/establishment' : '/login');
+        router.replace(isAuth ? '/products' : '/login');
     });
 </script>
