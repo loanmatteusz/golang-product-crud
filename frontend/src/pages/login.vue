@@ -25,15 +25,15 @@
     const login = async ({email, password}: Login) => {
         const success = await auth.login(email, password);
         if (success) {
+            toast.success({ title: 'Success', message: 'The form has been submitted.' });
             router.push('/establishment');
         } else {
-            alert('Credenciais inválidas');
+            toast.warning({title: 'Error', message: 'Credenciais inválidas'});
         }
     }
 
     async function onSubmit() {
         await login(state as Login);
-        toast.success({ title: 'Success', message: 'The form has been submitted.' });
     }
 </script>
 
