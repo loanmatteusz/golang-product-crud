@@ -13,13 +13,13 @@
 
     const items = [
       {
-          title: "Establishments",
-          url: "establishment",
+          title: "Products",
+          url: "products",
           icon: Warehouse,
       },
       {
-          title: "Store",
-          url: "store",
+          title: "Categories",
+          url: "categories",
           icon: Store,
       },
     ];
