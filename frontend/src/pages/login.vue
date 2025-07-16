@@ -47,7 +47,7 @@
         </div>
         
         <NuxtForm :schema="schema" :state="state" @submit="onSubmit"
-            class="flex flex-col w-full mb-8 px-8 py-12 gap-6 rounded-2xl sm:w-md sm:px-14 sm:py-10 sm:bg-[#ffffff29]"
+            class="flex flex-col w-full mb-8 px-8 py-12 gap-6 rounded-2xl sm:w-md sm:px-14 sm:py-10 sm:bg-[#ffffff19]"
         >
             <p class="text-3xl text-center text-white">Acesse sua conta</p>
 

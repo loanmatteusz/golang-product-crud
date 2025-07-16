@@ -9,7 +9,7 @@ export const useProduct = () => {
             CategoryID: '1',
             CreatedAt: new Date(),
             UpdatedAt: new Date(),
-        }
+        },
     ]; // Temporário / Estatico
     // const config = useRuntimeConfig();
 

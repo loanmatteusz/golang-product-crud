@@ -13,6 +13,12 @@
 
     async function getData(): Promise<Category[]> {
         return [
+        {
+                ID: '728ed52f',
+                Name: 'Category Test',
+                CreatedAt: new Date(),
+                UpdatedAt: new Date(), 
+            },
             {
                 ID: '728ed52f',
                 Name: 'Category Test',

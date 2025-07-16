@@ -3,6 +3,7 @@
     import {
         FlexRender,
         getCoreRowModel,
+        getPaginationRowModel,
         useVueTable,
     } from '@tanstack/vue-table';
 
@@ -24,6 +25,7 @@
         get data() { return props.data },
         get columns() { return props.columns },
         getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
     });
 </script>
 
@@ -60,5 +62,25 @@
         </template>
       </TableBody>
     </Table>
+
+    <!-- Pagination -->
+    <!-- <div class="flex items-center justify-end py-4 space-x-2">
+      <Button
+        variant="outline"
+        size="sm"
+        :disabled="!table.getCanPreviousPage()"
+        @click="table.previousPage()"
+      >
+        Previous
+      </Button>
+      <Button
+        variant="outline"
+        size="sm"
+        :disabled="!table.getCanNextPage()"
+        @click="table.nextPage()"
+      >
+        Next
+      </Button>
+    </div> -->
   </div>
 </template>

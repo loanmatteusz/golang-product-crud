@@ -1,8 +1,25 @@
 import { h } from 'vue'
 import { type ColumnDef } from '@tanstack/vue-table';
 import type { Category } from '~/types/category'
+import Checkbox from '../ui/checkbox/Checkbox.vue';
+import DataTableDropdown from './data-table-dropdown.vue';
 
 export const columns: ColumnDef<Category>[] = [
+    {
+        id: 'select',
+        header: ({ table }) => h(Checkbox, {
+            'modelValue': table.getIsAllPageRowsSelected(),
+            'onUpdate:modelValue': (value: boolean) => table.toggleAllPageRowsSelected(!!value),
+            'ariaLabel': 'Select all',
+        }),
+        cell: ({ row }) => h(Checkbox, {
+            'modelValue': row.getIsSelected(),
+            'onUpdate:modelValue': (value: boolean) => row.toggleSelected(!!value),
+            'ariaLabel': 'Select row',
+        }),
+        enableSorting: false,
+        enableHiding: false,
+    },
     {
         accessorKey: 'Name',
         header: () => h('div', { class: 'text-right' }, 'Name'),
@@ -29,16 +46,17 @@ export const columns: ColumnDef<Category>[] = [
             return h('div', { class: 'text-right font-medium' }, formattedDate);
         },
     },
-    // {
-    //     id: 'actions',
-    //     enableHiding: false,
-    //     cell: ({ row }) => {
-    //         const category = row.original;
-    //         return h('div', { class: 'relative' }, h(DropdownAction, {
-    //             category,
-    //         }))
-    //     },
-    // },
+    {
+        id: 'actions',
+        enableHiding: false,
+        header: () => h('div', { class: 'text-right' }, 'Actions'),
+        cell: ({ row }) => {
+            const category = row.original;
+            return h('div', { class: 'relative text-right' }, h(DataTableDropdown, {
+                category,
+            }))
+        },
+    },
     // {
     //     accessorKey: 'price',
     //     header: () => h('div', { class: 'text-right' }, 'Price'),
