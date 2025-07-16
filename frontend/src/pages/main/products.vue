@@ -1,5 +1,18 @@
 <script setup lang="ts">
     setPageLayout('private');
+    useHead({
+        title: 'Produtos',
+    });
+
+    import { useProduct } from '~/composables/useProducts';
+
+    const { list } = useProduct();
+    const { data: listProducts, error: listProductsError } = useAsyncData('products', async () => await list());
+    if (listProductsError.value) {
+        console.error("Erro to load product list.");
+    }
+
+    console.log({ listProducts: listProducts.value });
 </script>
 
 <template>

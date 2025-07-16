@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { Warehouse, Store, FileSearch } from "lucide-vue-next"
+    import { ShoppingCart, Tag, Github } from "lucide-vue-next"
     import {
     Sidebar,
     SidebarContent,
@@ -15,19 +15,19 @@
       {
           title: "Products",
           url: "products",
-          icon: Warehouse,
+          icon: ShoppingCart,
       },
       {
           title: "Categories",
           url: "categories",
-          icon: Store,
+          icon: Tag,
       },
     ];
 
     const github = {
       title: "Github",
       url: "http://github.com/loanmatteusz/challenge-snet",
-      icon: FileSearch,
+      icon: Github,
     }
 </script>
 
