@@ -3,6 +3,7 @@ package handlers
 import (
 	"backend/internal/custom_errors"
 	"backend/internal/dtos"
+	"backend/internal/dtos/helpers"
 	"backend/internal/services"
 	"errors"
 	"net/http"
@@ -40,7 +41,8 @@ func (h *CategoryHandler) Create(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	return ctx.JSON(http.StatusCreated, category)
+	response := helpers.FromCategoryModel(category)
+	return ctx.JSON(http.StatusCreated, response)
 }
 
 func (h *CategoryHandler) GetByID(ctx echo.Context) error {
@@ -57,7 +59,8 @@ func (h *CategoryHandler) GetByID(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal server error"})
 	}
 
-	return ctx.JSON(http.StatusOK, category)
+	response := helpers.FromCategoryModel(category)
+	return ctx.JSON(http.StatusOK, response)
 }
 
 func (h *CategoryHandler) GetAll(ctx echo.Context) error {
@@ -77,8 +80,10 @@ func (h *CategoryHandler) GetAll(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal server error"})
 	}
+
+	response := helpers.FromCategoryModelList(categories)
 	return ctx.JSON(http.StatusOK, map[string]interface{}{
-		"data": categories,
+		"data": response,
 		"pagination": map[string]interface{}{
 			"page":       page,
 			"limit":      limit,
@@ -103,7 +108,7 @@ func (h *CategoryHandler) Update(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"validation_erros": err.Error()})
 	}
 
-	updated, err := h.service.Update(id, dto)
+	categoryUpdated, err := h.service.Update(id, dto)
 	if err != nil {
 		if errors.Is(err, custom_errors.ErrCategoryNotFound) {
 			return ctx.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
@@ -114,7 +119,8 @@ func (h *CategoryHandler) Update(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal server error"})
 	}
 
-	return ctx.JSON(http.StatusOK, updated)
+	response := helpers.FromCategoryModel(categoryUpdated)
+	return ctx.JSON(http.StatusOK, response)
 }
 
 func (h *CategoryHandler) Delete(ctx echo.Context) error {
