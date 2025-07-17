@@ -14,7 +14,7 @@ type CategoryRepository interface {
 	FindByName(name string) (*models.Category, error)
 	Update(category *models.Category) error
 	Delete(id uuid.UUID) error
-	FindAll() ([]models.Category, error)
+	FindAll(limit int, offset int) ([]models.Category, int64, error)
 }
 
 type categoryRepository struct {
@@ -59,8 +59,16 @@ func (r *categoryRepository) Delete(id uuid.UUID) error {
 	return r.db.Delete(&models.Category{}, "id = ?", id).Error
 }
 
-func (r *categoryRepository) FindAll() ([]models.Category, error) {
+func (r *categoryRepository) FindAll(limit int, offset int) ([]models.Category, int64, error) {
+	var total int64
+	if err := r.db.Model(&models.Category{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
 	var categories []models.Category
-	err := r.db.Find(&categories).Error
-	return categories, err
+	if err := r.db.Limit(limit).Offset(offset).Find(&categories).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return categories, total, nil
 }

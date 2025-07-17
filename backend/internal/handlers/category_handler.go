@@ -6,6 +6,7 @@ import (
 	"backend/internal/services"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
@@ -60,11 +61,29 @@ func (h *CategoryHandler) GetByID(ctx echo.Context) error {
 }
 
 func (h *CategoryHandler) GetAll(ctx echo.Context) error {
-	categories, err := h.service.FindAll()
-	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	page, err := strconv.Atoi(ctx.QueryParam("page"))
+	if err != nil || page < 1 {
+		page = 1
 	}
-	return ctx.JSON(http.StatusOK, categories)
+
+	limit, err := strconv.Atoi(ctx.QueryParam("limit"))
+	if err != nil || limit < 1 {
+		limit = 10
+	}
+
+	categories, total, totalPages, err := h.service.FindAll(page, limit)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal server error"})
+	}
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"data": categories,
+		"pagination": map[string]interface{}{
+			"page":       page,
+			"limit":      limit,
+			"total":      total,
+			"totalPages": totalPages,
+		},
+	})
 }
 
 func (h *CategoryHandler) Update(ctx echo.Context) error {

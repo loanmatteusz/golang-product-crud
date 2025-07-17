@@ -6,6 +6,7 @@ import (
 	"backend/internal/models"
 	"backend/internal/repositories"
 	"fmt"
+	"math"
 
 	"github.com/google/uuid"
 )
@@ -13,7 +14,7 @@ import (
 type CategoryService interface {
 	Create(dto dtos.CreateCategoryDTO) (*models.Category, error)
 	FindByID(id uuid.UUID) (*models.Category, error)
-	FindAll() ([]models.Category, error)
+	FindAll(page int, limit int) ([]models.Category, int64, int, error)
 	Update(id uuid.UUID, dto dtos.UpdateCategoryDTO) (*models.Category, error)
 	Delete(id uuid.UUID) error
 }
@@ -57,8 +58,22 @@ func (s *categoryService) FindByID(id uuid.UUID) (*models.Category, error) {
 	return category, nil
 }
 
-func (s *categoryService) FindAll() ([]models.Category, error) {
-	return s.categoryRepository.FindAll()
+func (s *categoryService) FindAll(page int, limit int) ([]models.Category, int64, int, error) {
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 10
+	}
+
+	offset := (page - 1) * limit
+	categories, total, err := s.categoryRepository.FindAll(limit, offset)
+	if err != nil {
+		return nil, 0, 0, err
+	}
+
+	totalPages := int(math.Ceil(float64(total) / float64(limit)))
+	return categories, total, totalPages, nil
 }
 
 func (s *categoryService) Update(id uuid.UUID, dto dtos.UpdateCategoryDTO) (*models.Category, error) {
