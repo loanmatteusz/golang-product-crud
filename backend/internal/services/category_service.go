@@ -1,6 +1,7 @@
 package services
 
 import (
+	"backend/internal/custom_errors"
 	"backend/internal/dtos"
 	"backend/internal/models"
 	"backend/internal/repositories"
@@ -26,6 +27,14 @@ func NewCategoryService(categoryRepository repositories.CategoryRepository) Cate
 }
 
 func (s *categoryService) Create(dto dtos.CreateCategoryDTO) (*models.Category, error) {
+	categoryNameAlreadyExist, err := s.categoryRepository.FindByName(dto.Name)
+	if err != nil {
+		return nil, err
+	}
+	if categoryNameAlreadyExist != nil {
+		return nil, custom_errors.ErrCategoryNameExists
+	}
+
 	category := &models.Category{
 		ID:   uuid.New(),
 		Name: dto.Name,

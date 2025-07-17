@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"backend/internal/models"
+	"errors"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -10,6 +11,7 @@ import (
 type CategoryRepository interface {
 	Create(category *models.Category) error
 	FindByID(id uuid.UUID) (*models.Category, error)
+	FindByName(name string) (*models.Category, error)
 	Update(category *models.Category) error
 	Delete(id uuid.UUID) error
 	FindAll() ([]models.Category, error)
@@ -30,6 +32,17 @@ func (r *categoryRepository) Create(category *models.Category) error {
 func (r *categoryRepository) FindByID(id uuid.UUID) (*models.Category, error) {
 	var category models.Category
 	if err := r.db.First(&category, "id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return &category, nil
+}
+
+func (r *categoryRepository) FindByName(name string) (*models.Category, error) {
+	var category models.Category
+	if err := r.db.First(&category, "name = ?", name).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &category, nil

@@ -1,20 +1,24 @@
 package handlers
 
 import (
+	"backend/internal/custom_errors"
 	"backend/internal/dtos"
 	"backend/internal/services"
+	"errors"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
 type CategoryHandler struct {
-	service services.CategoryService
+	service  services.CategoryService
+	validate *validator.Validate
 }
 
 func NewCategoryHandler(s services.CategoryService) *CategoryHandler {
-	return &CategoryHandler{service: s}
+	return &CategoryHandler{service: s, validate: validator.New()}
 }
 
 func (h *CategoryHandler) Create(ctx echo.Context) error {
@@ -23,8 +27,15 @@ func (h *CategoryHandler) Create(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Error to create a category"})
 	}
 
+	if err := h.validate.Struct(dto); err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"validation_erros": err.Error()})
+	}
+
 	category, err := h.service.Create(dto)
 	if err != nil {
+		if errors.Is(err, custom_errors.ErrCategoryNameExists) {
+			return ctx.JSON(http.StatusConflict, map[string]string{"error": err.Error()})
+		}
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
