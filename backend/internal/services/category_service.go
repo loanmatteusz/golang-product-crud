@@ -5,10 +5,12 @@ import (
 	"backend/internal/dtos"
 	"backend/internal/models"
 	"backend/internal/repositories"
-	"fmt"
+	"errors"
 	"math"
+	"strings"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type CategoryService interface {
@@ -77,16 +79,28 @@ func (s *categoryService) FindAll(page, limit int, nameFilter string) ([]models.
 }
 
 func (s *categoryService) Update(id uuid.UUID, dto dtos.UpdateCategoryDTO) (*models.Category, error) {
+	if strings.TrimSpace(*dto.Name) == "" {
+		return nil, custom_errors.ErrCategoryNameEmpty
+	}
+
 	category, err := s.categoryRepository.FindByID(id)
 	if err != nil {
 		return nil, err
 	}
-
-	if dto.Name != nil {
-		category.Name = *dto.Name
+	if category == nil {
+		return nil, custom_errors.ErrCategoryNotFound
 	}
 
-	fmt.Println(dto)
+	if dto.Name != nil && *dto.Name != category.Name {
+		existingCategory, err := s.categoryRepository.FindByName(*dto.Name)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
+		if existingCategory != nil && existingCategory.ID != id {
+			return nil, custom_errors.ErrCategoryNameExists
+		}
+		category.Name = *dto.Name
+	}
 
 	err = s.categoryRepository.Update(category)
 	return category, err

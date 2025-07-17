@@ -91,7 +91,7 @@ func (h *CategoryHandler) GetAll(ctx echo.Context) error {
 func (h *CategoryHandler) Update(ctx echo.Context) error {
 	id, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid category ID"})
 	}
 
 	var dto dtos.UpdateCategoryDTO
@@ -99,9 +99,19 @@ func (h *CategoryHandler) Update(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Error to try to update category"})
 	}
 
+	if err := h.validate.Struct(dto); err != nil {
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"validation_erros": err.Error()})
+	}
+
 	updated, err := h.service.Update(id, dto)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		if errors.Is(err, custom_errors.ErrCategoryNotFound) {
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
+		}
+		if errors.Is(err, custom_errors.ErrCategoryNameExists) {
+			return ctx.JSON(http.StatusConflict, map[string]string{"error": err.Error()})
+		}
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal server error"})
 	}
 
 	return ctx.JSON(http.StatusOK, updated)
@@ -117,7 +127,7 @@ func (h *CategoryHandler) Delete(ctx echo.Context) error {
 		if errors.Is(err, custom_errors.ErrCategoryNotFound) {
 			return ctx.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
 		}
-		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Error to try to delete category"})
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal server error"})
 	}
 
 	return ctx.NoContent(http.StatusNoContent)
