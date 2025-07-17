@@ -14,7 +14,7 @@ import (
 type CategoryService interface {
 	Create(dto dtos.CreateCategoryDTO) (*models.Category, error)
 	FindByID(id uuid.UUID) (*models.Category, error)
-	FindAll(page int, limit int) ([]models.Category, int64, int, error)
+	FindAll(page, limit int, nameFilter string) ([]models.Category, int64, int, error)
 	Update(id uuid.UUID, dto dtos.UpdateCategoryDTO) (*models.Category, error)
 	Delete(id uuid.UUID) error
 }
@@ -58,7 +58,7 @@ func (s *categoryService) FindByID(id uuid.UUID) (*models.Category, error) {
 	return category, nil
 }
 
-func (s *categoryService) FindAll(page int, limit int) ([]models.Category, int64, int, error) {
+func (s *categoryService) FindAll(page, limit int, nameFilter string) ([]models.Category, int64, int, error) {
 	if page < 1 {
 		page = 1
 	}
@@ -67,7 +67,7 @@ func (s *categoryService) FindAll(page int, limit int) ([]models.Category, int64
 	}
 
 	offset := (page - 1) * limit
-	categories, total, err := s.categoryRepository.FindAll(limit, offset)
+	categories, total, err := s.categoryRepository.FindAll(limit, offset, nameFilter)
 	if err != nil {
 		return nil, 0, 0, err
 	}

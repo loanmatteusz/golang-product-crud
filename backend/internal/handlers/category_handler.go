@@ -71,7 +71,9 @@ func (h *CategoryHandler) GetAll(ctx echo.Context) error {
 		limit = 10
 	}
 
-	categories, total, totalPages, err := h.service.FindAll(page, limit)
+	nameFilter := ctx.QueryParam("name")
+
+	categories, total, totalPages, err := h.service.FindAll(page, limit, nameFilter)
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal server error"})
 	}

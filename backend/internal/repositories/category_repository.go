@@ -14,7 +14,7 @@ type CategoryRepository interface {
 	FindByName(name string) (*models.Category, error)
 	Update(category *models.Category) error
 	Delete(id uuid.UUID) error
-	FindAll(limit int, offset int) ([]models.Category, int64, error)
+	FindAll(limit, offset int, nameFilter string) ([]models.Category, int64, error)
 }
 
 type categoryRepository struct {
@@ -59,14 +59,21 @@ func (r *categoryRepository) Delete(id uuid.UUID) error {
 	return r.db.Delete(&models.Category{}, "id = ?", id).Error
 }
 
-func (r *categoryRepository) FindAll(limit int, offset int) ([]models.Category, int64, error) {
+func (r *categoryRepository) FindAll(limit, offset int, nameFilter string) ([]models.Category, int64, error) {
+	var categories []models.Category
 	var total int64
-	if err := r.db.Model(&models.Category{}).Count(&total).Error; err != nil {
+
+	query := r.db.Model(&models.Category{})
+
+	if nameFilter != "" {
+		query = query.Where("name ILIKE ?", "%"+nameFilter+"%")
+	}
+
+	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
-	var categories []models.Category
-	if err := r.db.Limit(limit).Offset(offset).Find(&categories).Error; err != nil {
+	if err := query.Limit(limit).Offset(offset).Find(&categories).Error; err != nil {
 		return nil, 0, err
 	}
 
