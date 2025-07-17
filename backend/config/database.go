@@ -1,10 +1,10 @@
 package config
 
 import (
-	"os"
 	"backend/internal/models"
 	"fmt"
 	"log"
+	"os"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -35,9 +35,8 @@ func ConnectDatabase() {
 	DB = database
 	DB.AutoMigrate(
 		&models.User{},
-		&models.Address{},
-		&models.Establishment{},
-		&models.Store{},
+		&models.Product{},
+		&models.Category{},
 	)
 
 	log.Println("Database connected successfully")

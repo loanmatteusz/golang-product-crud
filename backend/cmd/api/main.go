@@ -25,23 +25,22 @@ func main() {
 	db := config.DB
 
 	userRepository := repositories.NewUserRepository(db)
-	addressRepository := repositories.NewAddressRepository(db)
-	storeRepository := repositories.NewStoreRepository(db)
-	establishmentRepository := repositories.NewEstablishmentRepository(db)
+	categoryRepository := repositories.NewCategoryRepository(db)
+	productRepository := repositories.NewProductRepository(db)
 
 	userService := services.NewUserService(userRepository)
-	establishmentService := services.NewEstablishmentService(addressRepository, establishmentRepository, storeRepository)
-	storeService := services.NewStoreService(addressRepository, storeRepository)
+	categoryService := services.NewCategoryService(categoryRepository)
+	productService := services.NewProductService(productRepository, categoryRepository)
 
 	userHandler := handlers.NewUserHandler(userService)
-	establishmentHandler := handlers.NewEstablishmentHandler(establishmentService)
-	storeHandler := handlers.NewStoreHandler(storeService)
+	categoryHandler := handlers.NewCategoryHandler(categoryService)
+	productHandler := handlers.NewProductHandler(productService)
 
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
 
-	routes.Routes(e, userHandler, establishmentHandler, storeHandler)
+	routes.Routes(e, userHandler, categoryHandler, productHandler)
 
 	e.GET("/health", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Server is ON!")

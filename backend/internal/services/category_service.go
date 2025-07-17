@@ -1,0 +1,65 @@
+package services
+
+import (
+	"backend/internal/dtos"
+	"backend/internal/models"
+	"backend/internal/repositories"
+	"fmt"
+
+	"github.com/google/uuid"
+)
+
+type CategoryService interface {
+	Create(dto dtos.CreateCategoryDTO) (*models.Category, error)
+	FindByID(id uuid.UUID) (*models.Category, error)
+	FindAll() ([]models.Category, error)
+	Update(id uuid.UUID, dto dtos.UpdateCategoryDTO) (*models.Category, error)
+	Delete(id uuid.UUID) error
+}
+
+type categoryService struct {
+	categoryRepository repositories.CategoryRepository
+}
+
+func NewCategoryService(categoryRepository repositories.CategoryRepository) CategoryService {
+	return &categoryService{categoryRepository}
+}
+
+func (s *categoryService) Create(dto dtos.CreateCategoryDTO) (*models.Category, error) {
+	category := &models.Category{
+		ID:   uuid.New(),
+		Name: dto.Name,
+	}
+	if err := s.categoryRepository.Create(category); err != nil {
+		return nil, err
+	}
+	return s.categoryRepository.FindByID(category.ID)
+}
+
+func (s *categoryService) FindByID(id uuid.UUID) (*models.Category, error) {
+	return s.categoryRepository.FindByID(id)
+}
+
+func (s *categoryService) FindAll() ([]models.Category, error) {
+	return s.categoryRepository.FindAll()
+}
+
+func (s *categoryService) Update(id uuid.UUID, dto dtos.UpdateCategoryDTO) (*models.Category, error) {
+	category, err := s.categoryRepository.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if dto.Name != nil {
+		category.Name = *dto.Name
+	}
+
+	fmt.Println(dto)
+
+	err = s.categoryRepository.Update(category)
+	return category, err
+}
+
+func (s *categoryService) Delete(id uuid.UUID) error {
+	return s.categoryRepository.Delete(id)
+}

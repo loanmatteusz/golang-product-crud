@@ -34,90 +34,69 @@ Body:
 }
 ```
 
-### Estabelecimentos
+### Produtos
 
-- **Criar Estabelecimento**
+- **Criar Produto**
 
-POST /establishments
+POST /products
 
 Body exemplo:
 ```json
 {
-  "number": "100",
-  "name": "Establishment Name",
-  "legal_name": "Establishment Legal Name",
-  "address": {
-    "street": "Rua A",
-    "number": "123",
-    "city": "Cidade X",
-    "state": "UF",
-    "zip_code": "000000"
-  }
+  "name": "Product Name",
+  "price": 1050,
+	"category_id": "bcc02642-64c4-4bb6-89cc-bb9aa0d9d6c4"
 }
 ```
 
-- **Listar todos os estabelecimentos**
+- **Listar todos os Produtos**
 
-GET /establishments
-
-
-- **Obter estabelecimento por ID**
-
-GET /establishments/:id
+GET /products
 
 
-- **Atualizar estabelecimento**
+- **Obter Produto por ID**
 
-PUT /establishments/:id
+GET /products/:id
+
+
+- **Atualizar Produto**
+
+PUT /products/:id
 > Mesma estrutura do POST, com campos opcionais.
 
-- **Excluir estabelecimento**
+- **Excluir Produto**
 
-DELETE /establishments/:id
-> Não é permitido excluir estabelecimento que tenha lojas vinculadas.
+DELETE /products/:id
+> Não é permitido excluir Produto que tenha lojas vinculadas.
 
 
-### Lojas
+### Categorias
 
-- **Criar Loja**
+- **Criar Categoria**
 
-POST /stores
+POST /categories
 
 Body exemplo:
 
 ```json
 {
-  "number": "177",
-  "name": "Store Name",
-  "legal_name": "Store Legal Name",
-  "address": {
-    "street": "Rua B",
-    "number": "242",
-    "city": "Cidade Y",
-    "state": "UF",
-    "zip_code": "111111"
-  },
-  "establishment_id": "uuid-do-estabelecimento"
+  "name": "Category Name",
 }
 ```
 
-- **Listar todas as lojas**
+- **Listar todas as categorias**
 
-GET /stores
+GET /categories
 
-- **Obter loja por ID**
+- **Obter categoria por ID**
 
-GET /stores/:id
+GET /categories/:id
 
-- **Listar lojas pelo ID do estabelecimento**
+- **Atualizar categoria**
 
-GET /stores/establishment/:id
-
-- **Atualizar Loja**
-
-PUT /stores/:id
+PUT /categories/:id
 > Mesma estrutura do POST, campos opcionais.
 
-- **Excluit Loja**
+- **Excluit categoria**
 
-DELETE /stores/:id
+DELETE /categories/:id
