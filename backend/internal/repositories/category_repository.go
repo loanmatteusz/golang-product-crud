@@ -32,6 +32,9 @@ func (r *categoryRepository) Create(category *models.Category) error {
 func (r *categoryRepository) FindByID(id uuid.UUID) (*models.Category, error) {
 	var category models.Category
 	if err := r.db.First(&category, "id = ?", id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &category, nil

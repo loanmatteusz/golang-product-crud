@@ -42,11 +42,19 @@ func (s *categoryService) Create(dto dtos.CreateCategoryDTO) (*models.Category, 
 	if err := s.categoryRepository.Create(category); err != nil {
 		return nil, err
 	}
+
 	return s.categoryRepository.FindByID(category.ID)
 }
 
 func (s *categoryService) FindByID(id uuid.UUID) (*models.Category, error) {
-	return s.categoryRepository.FindByID(id)
+	category, err := s.categoryRepository.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+	if category == nil {
+		return nil, custom_errors.ErrCategoryNotFound
+	}
+	return category, nil
 }
 
 func (s *categoryService) FindAll() ([]models.Category, error) {

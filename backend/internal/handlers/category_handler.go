@@ -50,7 +50,10 @@ func (h *CategoryHandler) GetByID(ctx echo.Context) error {
 
 	category, err := h.service.FindByID(id)
 	if err != nil {
-		return ctx.JSON(http.StatusNotFound, map[string]string{"error": "Erro to try to get a category by ID"})
+		if errors.Is(err, custom_errors.ErrCategoryNotFound) {
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
+		}
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal server error"})
 	}
 
 	return ctx.JSON(http.StatusOK, category)
