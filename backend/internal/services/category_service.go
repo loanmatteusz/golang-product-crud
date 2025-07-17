@@ -93,5 +93,13 @@ func (s *categoryService) Update(id uuid.UUID, dto dtos.UpdateCategoryDTO) (*mod
 }
 
 func (s *categoryService) Delete(id uuid.UUID) error {
+	category, err := s.categoryRepository.FindByID(id)
+	if err != nil {
+		return err
+	}
+	if category == nil {
+		return custom_errors.ErrCategoryNotFound
+	}
+
 	return s.categoryRepository.Delete(id)
 }

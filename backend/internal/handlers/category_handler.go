@@ -110,10 +110,13 @@ func (h *CategoryHandler) Update(ctx echo.Context) error {
 func (h *CategoryHandler) Delete(ctx echo.Context) error {
 	id, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return ctx.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid category ID"})
 	}
 
 	if err := h.service.Delete(id); err != nil {
+		if errors.Is(err, custom_errors.ErrCategoryNotFound) {
+			return ctx.JSON(http.StatusNotFound, map[string]string{"error": err.Error()})
+		}
 		return ctx.JSON(http.StatusInternalServerError, map[string]string{"error": "Error to try to delete category"})
 	}
 
