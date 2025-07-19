@@ -11,12 +11,7 @@
     } from '@/components/ui/dropdown-menu'
 
     defineProps<{
-        category: {
-            ID: string;
-            Name: string;
-            CreatedAt: Date;
-            UpdatedAt: Date;
-        }
+        category: Category,
     }>()
 
     function copy(id: string) {
@@ -34,7 +29,7 @@
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end">
       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-      <DropdownMenuItem @click="copy(category.ID)">
+      <DropdownMenuItem @click="copy(category.id)">
         Copy category ID
       </DropdownMenuItem>
       <DropdownMenuSeparator />
