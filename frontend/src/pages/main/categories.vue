@@ -28,20 +28,23 @@
 <!-- TEMPLATE -->
 
 <template>
-    <div class="w-full flex flex-col">
+    <div class="w-full flex flex-col items-center justify-center">
         <div class="w-full flex gap-4 items-center justify-center">
             <h1 class="font-bold">Categorias</h1>
         </div>
-        <div class="container py-10 mx-auto">
-            <DataTable v-if="!loading" :columns="columns" :data="safeCategories" />
-            <div v-if="loading">Carregando...</div>
+        <div class="w-full py-10">
+            <DataTable class="w-full" v-if="!loading" :columns="columns" :data="safeCategories" />
+            <div class="w-full flex items-center justify-center" v-if="loading">Carregando...</div>
             <div v-if="error" class="text-red-600">{{ error }}</div>
         </div>
-        <AppTablePagination
-            :current-page="page"
-            :total-items="pagination?.total || 0"
-            :items-per-page="limit"
-            @update:current-page="goToPage"
-        />
+        <div class="w-full">
+            <AppTablePagination
+                class="flex justify-end"
+                :current-page="page"
+                :total-items="pagination?.total || 0"
+                :items-per-page="limit"
+                @update:current-page="goToPage"
+            />
+        </div> 
     </div>
 </template>
