@@ -4,34 +4,24 @@
         title: 'Categorias',
     });
 
-    import { onMounted, ref } from 'vue';
+    import { onMounted } from 'vue';
     import { columns } from '~/components/categories/columns';
     import DataTable from '~/components/categories/data-table.vue';
-    import type { Category } from '~/types/category';
 
-    const data = ref<Category[]>([]);
+    const page = ref(1);
+    const limit = ref(10);
 
-    async function getData(): Promise<Category[]> {
-        return [
-        {
-                ID: '728ed52f',
-                Name: 'Category Test',
-                CreatedAt: new Date(),
-                UpdatedAt: new Date(), 
-            },
-            {
-                ID: '728ed52f',
-                Name: 'Category Test',
-                CreatedAt: new Date(),
-                UpdatedAt: new Date(), 
-            },
-        ];
-    }
+    const { categories, pagination, list, loading, error } = useCategories(page, limit);
 
-    onMounted(async () => {
-        data.value = await getData();
+    onMounted(() => {
+        list();
     });
 
+    const safeCategories = computed(() => categories.value ?? []);
+
+    function goToPage(newPage: number) {
+        page.value = newPage;
+    }
 </script>
 
 
@@ -43,7 +33,15 @@
             <h1 class="font-bold">Categorias</h1>
         </div>
         <div class="container py-10 mx-auto">
-            <DataTable :columns="columns" :data="data" />
+            <DataTable v-if="!loading" :columns="columns" :data="safeCategories" />
+            <div v-if="loading">Carregando...</div>
+            <div v-if="error" class="text-red-600">{{ error }}</div>
         </div>
+        <AppTablePagination
+            :current-page="page"
+            :total-items="pagination?.total || 0"
+            :items-per-page="limit"
+            @update:current-page="goToPage"
+        />
     </div>
 </template>

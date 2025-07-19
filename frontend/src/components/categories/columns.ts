@@ -1,6 +1,6 @@
 import { h } from 'vue'
 import { type ColumnDef } from '@tanstack/vue-table';
-import type { Category } from '~/types/category'
+import type { Category } from '~/composables/types'
 import Checkbox from '../ui/checkbox/Checkbox.vue';
 import DataTableDropdown from './data-table-dropdown.vue';
 
@@ -21,27 +21,27 @@ export const columns: ColumnDef<Category>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: 'Name',
+        accessorKey: 'name',
         header: () => h('div', { class: 'text-right' }, 'Name'),
         cell: ({ row }) => {
-            const name = row.getValue('Name');
+            const name = row.getValue('name');
             return h('div', { class: 'text-right font-medium' }, String(name));
         },
     },
     {
-        accessorKey: 'CreatedAt',
-        header: () => h('div', { class: 'text-right' }, 'Created'),
+        accessorKey: 'created_at',
+        header: () => h('div', { class: 'text-right' }, 'Date'),
         cell: ({ row }) => {
-            const createdAt = String(row.getValue('CreatedAt'));
+            const createdAt = String(row.getValue('created_at'));
             const formattedDate = new Date(createdAt).toDateString();
             return h('div', { class: 'text-right font-medium' }, formattedDate);
         },
     },
     {
-        accessorKey: 'UpdatedAt',
+        accessorKey: 'updated_at',
         header: () => h('div', { class: 'text-right' }, 'Last Update'),
         cell: ({ row }) => {
-            const updatedAt = String(row.getValue('UpdatedAt'));
+            const updatedAt = String(row.getValue('updated_at'));
             const formattedDate = new Date(updatedAt).toDateString();
             return h('div', { class: 'text-right font-medium' }, formattedDate);
         },
