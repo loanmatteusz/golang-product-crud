@@ -2,12 +2,14 @@ package routes
 
 import (
 	"backend/internal/handlers"
+	"backend/internal/middlewares"
 
 	"github.com/labstack/echo/v4"
 )
 
 func Routes(
 	e *echo.Echo,
+	secret string,
 	userHandler *handlers.UserHandler,
 	categoryHandler *handlers.CategoryHandler,
 	productHandler *handlers.ProductHandler,
@@ -20,6 +22,7 @@ func Routes(
 	auth.POST("/refresh", userHandler.Refresh)
 
 	products := v1.Group("/products")
+	products.Use(middlewares.AuthMiddleware(secret))
 	products.POST("", productHandler.Create)
 	products.GET("", productHandler.GetAll)
 	products.GET("/:id", productHandler.GetByID)
@@ -27,6 +30,7 @@ func Routes(
 	products.DELETE("/:id", productHandler.Delete)
 
 	categories := v1.Group("/categories")
+	categories.Use(middlewares.AuthMiddleware(secret))
 	categories.POST("", categoryHandler.Create)
 	categories.GET("", categoryHandler.GetAll)
 	categories.GET("/:id", categoryHandler.GetByID)

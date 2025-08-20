@@ -41,7 +41,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORS())
 
-	routes.Routes(e, userHandler, categoryHandler, productHandler)
+	routes.Routes(e, secret, userHandler, categoryHandler, productHandler)
 
 	e.GET("/health", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Server is ON!")
