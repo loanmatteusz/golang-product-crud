@@ -28,7 +28,8 @@ func main() {
 	categoryRepository := repositories.NewCategoryRepository(db)
 	productRepository := repositories.NewProductRepository(db)
 
-	userService := services.NewUserService(userRepository)
+	secret := os.Getenv("JWT_SECRET")
+	userService := services.NewUserService(userRepository, secret)
 	categoryService := services.NewCategoryService(categoryRepository)
 	productService := services.NewProductService(productRepository, categoryRepository)
 

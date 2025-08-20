@@ -12,18 +12,21 @@ func Routes(
 	categoryHandler *handlers.CategoryHandler,
 	productHandler *handlers.ProductHandler,
 ) {
-	auth := e.Group("/auth")
+	v1 := e.Group("/v1")
+
+	auth := v1.Group("/auth")
 	auth.POST("/register", userHandler.Register)
 	auth.POST("/login", userHandler.Login)
+	auth.POST("/refresh", userHandler.Refresh)
 
-	products := e.Group("/products")
+	products := v1.Group("/products")
 	products.POST("", productHandler.Create)
 	products.GET("", productHandler.GetAll)
 	products.GET("/:id", productHandler.GetByID)
 	products.PUT("/:id", productHandler.Update)
 	products.DELETE("/:id", productHandler.Delete)
 
-	categories := e.Group("/categories")
+	categories := v1.Group("/categories")
 	categories.POST("", categoryHandler.Create)
 	categories.GET("", categoryHandler.GetAll)
 	categories.GET("/:id", categoryHandler.GetByID)
