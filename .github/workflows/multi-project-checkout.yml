@@ -15,9 +15,11 @@ jobs:
       run: |
         if [ -d "./backend" ]; then
           echo "Backend folder found."
+        fi
 
     # Lida com o frontend
     - name: Handle frontend
       run: |
         if [ -d "./frontend" ]; then
           echo "Frontend folder found."
+        fi
