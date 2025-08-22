@@ -1,14 +1,17 @@
 package config_cache
 
-// CacheKeys mantém todas as chaves de cache da aplicação
+import "fmt"
+
 var CacheKeys = struct {
 	ProductsAll   string
 	ProductByID   func(id string) string
-	CategoriesAll string
+	CategoriesAll func(page, limit int, filter string) string
 	CategoryByID  func(id string) string
 }{
-	ProductsAll:   "products:all",
-	ProductByID:   func(id string) string { return "products:" + id },
-	CategoriesAll: "categories:all",
-	CategoryByID:  func(id string) string { return "categories:" + id },
+	ProductsAll: "products:all",
+	ProductByID: func(id string) string { return "products:" + id },
+	CategoriesAll: func(page, limit int, filter string) string {
+		return fmt.Sprintf("categories:all:page=%d:limit=%d:filter=%s", page, limit, filter)
+	},
+	CategoryByID: func(id string) string { return "categories:" + id },
 }

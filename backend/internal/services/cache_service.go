@@ -55,9 +55,6 @@ func (cs *CacheService) SetJSON(key string, value interface{}, ttl time.Duration
 
 func (cs *CacheService) GetJSON(key string, dest interface{}) error {
 	val, err := cs.client.Get(cs.ctx, key).Result()
-	if err == redis.Nil {
-		return nil
-	}
 	if err != nil {
 		return err
 	}

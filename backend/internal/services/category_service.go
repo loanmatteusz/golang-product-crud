@@ -1,6 +1,7 @@
 package services
 
 import (
+	config_cache "backend/internal/config/cache"
 	"backend/internal/custom_errors"
 	"backend/internal/dtos"
 	"backend/internal/models"
@@ -8,6 +9,7 @@ import (
 	"errors"
 	"math"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -23,10 +25,11 @@ type CategoryService interface {
 
 type categoryService struct {
 	categoryRepository repositories.CategoryRepository
+	cacheService       *CacheService
 }
 
-func NewCategoryService(categoryRepository repositories.CategoryRepository) CategoryService {
-	return &categoryService{categoryRepository}
+func NewCategoryService(categoryRepository repositories.CategoryRepository, cacheService *CacheService) CategoryService {
+	return &categoryService{categoryRepository, cacheService}
 }
 
 func (s *categoryService) Create(dto dtos.CreateCategoryDTO) (*models.Category, error) {
@@ -69,10 +72,24 @@ func (s *categoryService) FindAll(page, limit int, nameFilter string) ([]models.
 	}
 
 	offset := (page - 1) * limit
+
+	cacheKey := config_cache.CacheKeys.CategoriesAll(page, limit, nameFilter)
+	var categories []models.Category
+	var total int64
+
+	if err := s.cacheService.GetJSON(cacheKey, &categories); err == nil {
+		_ = s.cacheService.GetJSON(cacheKey+":total", &total)
+		totalPages := int(math.Ceil(float64(total) / float64(limit)))
+		return categories, total, totalPages, nil
+	}
+
 	categories, total, err := s.categoryRepository.FindAll(limit, offset, nameFilter)
 	if err != nil {
 		return nil, 0, 0, err
 	}
+
+	_ = s.cacheService.SetJSON(cacheKey, categories, time.Minute)
+	_ = s.cacheService.SetJSON(cacheKey+":total", total, time.Minute)
 
 	totalPages := int(math.Ceil(float64(total) / float64(limit)))
 	return categories, total, totalPages, nil

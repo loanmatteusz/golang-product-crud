@@ -37,8 +37,9 @@ func main() {
 	productRepository := repositories.NewProductRepository(db)
 
 	secret := os.Getenv("JWT_SECRET")
+	cacheService := services.NewCacheService()
 	userService := services.NewUserService(userRepository, secret)
-	categoryService := services.NewCategoryService(categoryRepository)
+	categoryService := services.NewCategoryService(categoryRepository, cacheService)
 	productService := services.NewProductService(productRepository, categoryRepository)
 
 	userHandler := handlers.NewUserHandler(userService)
