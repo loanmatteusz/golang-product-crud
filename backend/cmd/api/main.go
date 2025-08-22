@@ -2,11 +2,13 @@ package main
 
 import (
 	"backend/internal/config"
+	config_cache "backend/internal/config/cache"
 	"backend/internal/handlers"
 	"backend/internal/repositories"
 	"backend/internal/routes"
 	"backend/internal/services"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -23,6 +25,12 @@ func main() {
 
 	config.ConnectDatabase()
 	db := config.DB
+
+	addr := os.Getenv("REDIS_ADDR")
+	pass := os.Getenv("REDIS_PASS")
+	if err := config_cache.RedisConnection(addr, pass, 0); err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
 
 	userRepository := repositories.NewUserRepository(db)
 	categoryRepository := repositories.NewCategoryRepository(db)
