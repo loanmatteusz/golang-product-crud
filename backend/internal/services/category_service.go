@@ -53,6 +53,13 @@ func (s *categoryService) Create(dto dtos.CreateCategoryDTO) (*models.Category, 
 }
 
 func (s *categoryService) FindByID(id uuid.UUID) (*models.Category, error) {
+	cacheKey := config_cache.CacheKeys.CategoryByID(id.String())
+
+	var category *models.Category
+	if err := s.cacheService.GetJSON(cacheKey, &category); err == nil {
+		return category, nil
+	}
+
 	category, err := s.categoryRepository.FindByID(id)
 	if err != nil {
 		return nil, err
@@ -60,6 +67,9 @@ func (s *categoryService) FindByID(id uuid.UUID) (*models.Category, error) {
 	if category == nil {
 		return nil, custom_errors.ErrCategoryNotFound
 	}
+
+	_ = s.cacheService.SetJSON(cacheKey, category, time.Minute)
+
 	return category, nil
 }
 
