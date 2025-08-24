@@ -61,11 +61,11 @@ func (s *categoryService) FindByID(id uuid.UUID) (*models.Category, error) {
 	}
 
 	category, err := s.categoryRepository.FindByID(id)
-	if err != nil {
-		return nil, err
-	}
 	if category == nil {
 		return nil, custom_errors.ErrCategoryNotFound
+	}
+	if err != nil {
+		return nil, err
 	}
 
 	_ = s.cacheService.SetJSON(cacheKey, category, time.Minute)
@@ -135,11 +135,11 @@ func (s *categoryService) Update(id uuid.UUID, dto dtos.UpdateCategoryDTO) (*mod
 
 func (s *categoryService) Delete(id uuid.UUID) error {
 	category, err := s.categoryRepository.FindByID(id)
-	if err != nil {
-		return err
-	}
 	if category == nil {
 		return custom_errors.ErrCategoryNotFound
+	}
+	if err != nil {
+		return err
 	}
 
 	return s.categoryRepository.Delete(id)
