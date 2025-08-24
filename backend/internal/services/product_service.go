@@ -1,10 +1,10 @@
 package services
 
 import (
+	"backend/internal/custom_errors"
 	"backend/internal/dtos"
 	"backend/internal/models"
 	"backend/internal/repositories"
-	"log"
 
 	"github.com/google/uuid"
 )
@@ -31,7 +31,7 @@ func NewProductService(productRepository repositories.ProductRepository, categor
 
 func (s *productService) Create(dto dtos.CreateProductDTO) (*models.Product, error) {
 	if _, err := s.categoryRepository.FindByID(*dto.CategoryID); err != nil {
-		return nil, err
+		return nil, custom_errors.ErrCategoryNotFound
 	}
 
 	product := &models.Product{
@@ -51,7 +51,11 @@ func (s *productService) Create(dto dtos.CreateProductDTO) (*models.Product, err
 }
 
 func (s *productService) FindByID(id uuid.UUID) (*models.Product, error) {
-	return s.productRepository.FindByID(id)
+	product, err := s.productRepository.FindByID(id)
+	if err != nil {
+		return nil, custom_errors.ErrProductNotFound
+	}
+	return product, nil
 }
 
 func (s *productService) FindAll() ([]models.Product, error) {
@@ -61,7 +65,7 @@ func (s *productService) FindAll() ([]models.Product, error) {
 func (s *productService) Update(id uuid.UUID, dto dtos.UpdateProductDTO) (*models.Product, error) {
 	product, err := s.productRepository.FindByID(id)
 	if err != nil {
-		return nil, err
+		return nil, custom_errors.ErrProductNotFound
 	}
 
 	if dto.Name != nil {
@@ -76,7 +80,6 @@ func (s *productService) Update(id uuid.UUID, dto dtos.UpdateProductDTO) (*model
 		product.CategoryID = *dto.CategoryID
 	}
 
-	log.Printf("Produto atualizado: %+v", product) // log aqui
 	if err := s.productRepository.Update(product); err != nil {
 		return nil, err
 	}
@@ -85,9 +88,12 @@ func (s *productService) Update(id uuid.UUID, dto dtos.UpdateProductDTO) (*model
 }
 
 func (s *productService) Delete(id uuid.UUID) error {
-	_, err := s.productRepository.FindByID(id)
+	product, err := s.productRepository.FindByID(id)
 	if err != nil {
+		return custom_errors.ErrProductNotFound
+	}
+	if err := s.productRepository.Delete(product.ID); err != nil {
 		return err
 	}
-	return s.productRepository.Delete(id)
+	return nil
 }
