@@ -12,7 +12,7 @@ type ProductRepository interface {
 	FindByID(id uuid.UUID) (*models.Product, error)
 	Update(product *models.Product) error
 	Delete(id uuid.UUID) error
-	FindAll() ([]models.Product, error)
+	FindAll(page, limit int, nameFilter string) ([]models.Product, int64, error)
 }
 
 type productRepository struct {
@@ -49,8 +49,23 @@ func (r *productRepository) Delete(id uuid.UUID) error {
 	return r.db.Delete(&models.Product{}, "id = ?", id).Error
 }
 
-func (r *productRepository) FindAll() ([]models.Product, error) {
+func (r *productRepository) FindAll(limit, offset int, nameFilter string) ([]models.Product, int64, error) {
 	var products []models.Product
-	err := r.db.Preload("Category").Find(&products).Error
-	return products, err
+	var total int64
+
+	query := r.db.Model(&models.Product{})
+
+	if nameFilter != "" {
+		query = query.Where("name ILIKE ?", "%"+nameFilter+"%")
+	}
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if err := query.Limit(limit).Offset(offset).Find(&products).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return products, total, nil
 }

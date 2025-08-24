@@ -6,6 +6,7 @@ import (
 	"backend/internal/dtos/helpers"
 	"backend/internal/services"
 	"errors"
+	"strconv"
 
 	"net/http"
 
@@ -59,12 +60,33 @@ func (h *ProductHandler) GetByID(ctx echo.Context) error {
 }
 
 func (h *ProductHandler) GetAll(ctx echo.Context) error {
-	products, err := h.service.FindAll()
+	page, err := strconv.Atoi(ctx.QueryParam("page"))
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(ctx.QueryParam("limit"))
+	if err != nil || limit < 1 {
+		limit = 10
+	}
+
+	nameFilter := ctx.QueryParam("name")
+
+	products, total, totalPages, err := h.service.FindAll(page, limit, nameFilter)
 	if err != nil {
 		return helpers.SendError(ctx, http.StatusInternalServerError, custom_errors.CodeInternalServer, custom_errors.ErrInternalServer)
 	}
 
-	return ctx.JSON(http.StatusOK, products)
+	response := helpers.FromProductModelList(products)
+	return ctx.JSON(http.StatusOK, map[string]interface{}{
+		"data": response,
+		"pagination": map[string]interface{}{
+			"page":       page,
+			"limit":      limit,
+			"total":      total,
+			"totalPages": totalPages,
+		},
+	})
 }
 
 func (h *ProductHandler) Update(ctx echo.Context) error {

@@ -1,6 +1,10 @@
 package dtos
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type CreateProductDTO struct {
 	Name       string     `json:"name" validate:"required,min=1"`
@@ -20,4 +24,6 @@ type ProductResponseDTO struct {
 	Name       string    `json:"name"`
 	Price      int       `json:"price"`
 	CategoryID uuid.UUID `json:"category_id"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
 }

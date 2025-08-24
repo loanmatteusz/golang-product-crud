@@ -6,6 +6,7 @@ import (
 	"backend/internal/dtos"
 	"backend/internal/models"
 	"backend/internal/repositories"
+	"math"
 	"time"
 
 	"github.com/google/uuid"
@@ -14,7 +15,7 @@ import (
 type ProductService interface {
 	Create(dto dtos.CreateProductDTO) (*models.Product, error)
 	FindByID(id uuid.UUID) (*models.Product, error)
-	FindAll() ([]models.Product, error)
+	FindAll(page, limit int, nameFilter string) ([]models.Product, int64, int, error)
 	Update(id uuid.UUID, dto dtos.UpdateProductDTO) (*models.Product, error)
 	Delete(id uuid.UUID) error
 }
@@ -30,11 +31,7 @@ func NewProductService(
 	categoryRepository repositories.CategoryRepository,
 	cacheService *CacheService,
 ) ProductService {
-	return &productService{
-		productRepository:  productRepository,
-		categoryRepository: categoryRepository,
-		cacheService:       cacheService,
-	}
+	return &productService{productRepository, categoryRepository, cacheService}
 }
 
 func (s *productService) Create(dto dtos.CreateProductDTO) (*models.Product, error) {
@@ -74,8 +71,37 @@ func (s *productService) FindByID(id uuid.UUID) (*models.Product, error) {
 	return product, nil
 }
 
-func (s *productService) FindAll() ([]models.Product, error) {
-	return s.productRepository.FindAll()
+func (s *productService) FindAll(page, limit int, nameFilter string) ([]models.Product, int64, int, error) {
+	if page < 0 {
+		page = 1
+	}
+	if limit < 0 {
+		limit = 10
+	}
+
+	offset := (page - 1) * limit
+
+	cacheKey := config_cache.CacheKeys.ProductsAll(page, limit, nameFilter)
+
+	var products []models.Product
+	var total int64
+
+	if err := s.cacheService.GetJSON(cacheKey, &products); err == nil {
+		_ = s.cacheService.GetJSON(cacheKey+":total", &total)
+		totalPages := int(math.Ceil(float64(total) / float64(limit)))
+		return products, total, totalPages, nil
+	}
+
+	products, total, err := s.productRepository.FindAll(limit, offset, nameFilter)
+	if err != nil {
+		return nil, 0, 0, err
+	}
+
+	_ = s.cacheService.SetJSON(cacheKey, products, time.Minute)
+	_ = s.cacheService.SetJSON(cacheKey+":total", total, time.Minute)
+
+	totalPages := int(math.Ceil(float64(total) / float64(limit)))
+	return products, total, totalPages, nil
 }
 
 func (s *productService) Update(id uuid.UUID, dto dtos.UpdateProductDTO) (*models.Product, error) {

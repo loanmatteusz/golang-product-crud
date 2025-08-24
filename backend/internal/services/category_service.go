@@ -84,6 +84,7 @@ func (s *categoryService) FindAll(page, limit int, nameFilter string) ([]models.
 	offset := (page - 1) * limit
 
 	cacheKey := config_cache.CacheKeys.CategoriesAll(page, limit, nameFilter)
+
 	var categories []models.Category
 	var total int64
 
