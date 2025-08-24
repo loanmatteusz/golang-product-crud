@@ -40,7 +40,7 @@ func main() {
 	cacheService := services.NewCacheService()
 	userService := services.NewUserService(userRepository, secret)
 	categoryService := services.NewCategoryService(categoryRepository, cacheService)
-	productService := services.NewProductService(productRepository, categoryRepository)
+	productService := services.NewProductService(productRepository, categoryRepository, cacheService)
 
 	userHandler := handlers.NewUserHandler(userService)
 	categoryHandler := handlers.NewCategoryHandler(categoryService)

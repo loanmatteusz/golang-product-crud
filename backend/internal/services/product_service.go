@@ -1,10 +1,12 @@
 package services
 
 import (
+	config_cache "backend/internal/config/cache"
 	"backend/internal/custom_errors"
 	"backend/internal/dtos"
 	"backend/internal/models"
 	"backend/internal/repositories"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -20,12 +22,18 @@ type ProductService interface {
 type productService struct {
 	productRepository  repositories.ProductRepository
 	categoryRepository repositories.CategoryRepository
+	cacheService       *CacheService
 }
 
-func NewProductService(productRepository repositories.ProductRepository, categoryRepository repositories.CategoryRepository) ProductService {
+func NewProductService(
+	productRepository repositories.ProductRepository,
+	categoryRepository repositories.CategoryRepository,
+	cacheService *CacheService,
+) ProductService {
 	return &productService{
 		productRepository:  productRepository,
 		categoryRepository: categoryRepository,
+		cacheService:       cacheService,
 	}
 }
 
@@ -51,10 +59,18 @@ func (s *productService) Create(dto dtos.CreateProductDTO) (*models.Product, err
 }
 
 func (s *productService) FindByID(id uuid.UUID) (*models.Product, error) {
+	cacheKey := config_cache.CacheKeys.ProductByID(id.String())
+	var product *models.Product
+	if err := s.cacheService.GetJSON(cacheKey, product); err == nil {
+		return product, nil
+	}
+
 	product, err := s.productRepository.FindByID(id)
 	if err != nil {
 		return nil, custom_errors.ErrProductNotFound
 	}
+	_ = s.cacheService.SetJSON(cacheKey, product, time.Minute)
+
 	return product, nil
 }
 
