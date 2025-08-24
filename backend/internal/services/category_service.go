@@ -111,11 +111,11 @@ func (s *categoryService) Update(id uuid.UUID, dto dtos.UpdateCategoryDTO) (*mod
 	}
 
 	category, err := s.categoryRepository.FindByID(id)
-	if err != nil {
-		return nil, err
-	}
 	if category == nil {
 		return nil, custom_errors.ErrCategoryNotFound
+	}
+	if err != nil {
+		return nil, err
 	}
 
 	if dto.Name != nil && *dto.Name != category.Name {
