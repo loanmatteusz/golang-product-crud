@@ -47,12 +47,13 @@ func TestCategoryService_Create(t *testing.T) {
 
 		result, err := service.Create(dto)
 
+		mockCatRepo.AssertNotCalled(t, "Create", mock.Anything)
+
 		assert.Error(t, err)
 		assert.Nil(t, result)
 		assert.Equal(t, custom_errors.ErrCategoryNameExists, err)
 
 		mockCatRepo.AssertExpectations(t)
-		mockCatRepo.AssertNotCalled(t, "Create", mock.Anything)
 	})
 
 	t.Run("failed: error to try to find category by name", func(t *testing.T) {
@@ -64,11 +65,12 @@ func TestCategoryService_Create(t *testing.T) {
 
 		result, err := service.Create(dto)
 
+		mockCatRepo.AssertNotCalled(t, "Create", mock.Anything)
+
 		assert.Error(t, err)
 		assert.Nil(t, result)
 
 		mockCatRepo.AssertExpectations(t)
-		mockCatRepo.AssertNotCalled(t, "Create", mock.Anything)
 	})
 
 	t.Run("failed: error to try to create category", func(t *testing.T) {
@@ -77,15 +79,16 @@ func TestCategoryService_Create(t *testing.T) {
 		dto := dtos.CreateCategoryDTO{Name: "Nova Categoria"}
 
 		mockCatRepo.On("FindByName", "Nova Categoria").Return(nil, nil)
-		mockCatRepo.On("Create", mock.AnythingOfType("*models.Category")).Return(nil, errors.New("generic error"))
+		mockCatRepo.On("Create", mock.AnythingOfType("*models.Category")).Return(errors.New("generic error"))
 
 		result, err := service.Create(dto)
+
+		mockCatRepo.AssertNotCalled(t, "FindByID", mock.Anything)
 
 		assert.Error(t, err)
 		assert.Nil(t, result)
 
 		mockCatRepo.AssertExpectations(t)
-		mockCatRepo.AssertNotCalled(t, "FindByID", mock.Anything)
 	})
 
 	t.Run("failed: error to try to find category by id", func(t *testing.T) {
