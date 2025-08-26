@@ -25,10 +25,10 @@ type CategoryService interface {
 
 type categoryService struct {
 	categoryRepository repositories.CategoryRepository
-	cacheService       *CacheService
+	cacheService       CacheService
 }
 
-func NewCategoryService(categoryRepository repositories.CategoryRepository, cacheService *CacheService) CategoryService {
+func NewCategoryService(categoryRepository repositories.CategoryRepository, cacheService CacheService) CategoryService {
 	return &categoryService{categoryRepository, cacheService}
 }
 

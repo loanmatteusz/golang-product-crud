@@ -23,13 +23,13 @@ type ProductService interface {
 type productService struct {
 	productRepository  repositories.ProductRepository
 	categoryRepository repositories.CategoryRepository
-	cacheService       *CacheService
+	cacheService       CacheService
 }
 
 func NewProductService(
 	productRepository repositories.ProductRepository,
 	categoryRepository repositories.CategoryRepository,
-	cacheService *CacheService,
+	cacheService CacheService,
 ) ProductService {
 	return &productService{productRepository, categoryRepository, cacheService}
 }

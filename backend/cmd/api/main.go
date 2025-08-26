@@ -37,7 +37,7 @@ func main() {
 	productRepository := repositories.NewProductRepository(db)
 
 	secret := os.Getenv("JWT_SECRET")
-	cacheService := services.NewCacheService()
+	cacheService := services.NewRedisCacheService()
 	userService := services.NewUserService(userRepository, secret)
 	categoryService := services.NewCategoryService(categoryRepository, cacheService)
 	productService := services.NewProductService(productRepository, categoryRepository, cacheService)
